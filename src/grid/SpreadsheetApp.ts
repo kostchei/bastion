@@ -10,6 +10,7 @@ import {
 import { processCell, DependencyGraph } from '../formula/FormulaEngine';
 import { createAutoSave, loadSpreadsheet, saveSpreadsheet, listSpreadsheets, deleteSpreadsheet } from '../storage/StorageManager';
 import { buildCharacterSheet } from '../sheets/characterSheet';
+import { hashToState, getShareableURL } from '../sharing/urlSharing';
 
 /* ============ App State ============ */
 
@@ -31,8 +32,17 @@ const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) 
 /* ============ Initialize ============ */
 
 export async function initApp(): Promise<void> {
-    const loaded = await loadSpreadsheet('Untitled Spreadsheet');
-    const spreadsheet = loaded ?? createSpreadsheet();
+    // Check for shared sheet in URL hash first
+    let spreadsheet: SpreadsheetState;
+    const hashState = hashToState(window.location.hash);
+    if (hashState) {
+        spreadsheet = hashState;
+        // Clear hash from URL so it doesn't persist on refresh
+        history.replaceState(null, '', window.location.pathname);
+    } else {
+        const loaded = await loadSpreadsheet('Untitled Spreadsheet');
+        spreadsheet = loaded ?? createSpreadsheet();
+    }
 
     app = {
         spreadsheet,
@@ -691,6 +701,17 @@ function wireToolbar(): void {
                 updateStatusBar('D&D Character Sheet created ⚔️');
             });
         }
+    });
+
+    // Share as URL
+    $<HTMLButtonElement>('btn-share').addEventListener('click', () => {
+        const url = getShareableURL(app.spreadsheet);
+        navigator.clipboard.writeText(url).then(() => {
+            const kb = (new Blob([url])).size / 1024;
+            updateStatusBar(`Share link copied! (${kb.toFixed(1)} KB)`);
+        }).catch(() => {
+            prompt('Copy this share link:', url);
+        });
     });
 
     // File manager modal close
