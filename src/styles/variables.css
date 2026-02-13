@@ -6,8 +6,8 @@
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  --font-dnd-heading: 'Modesto Condensed', 'Book Antiqua', 'Palatino Linotype', serif;
-  --font-dnd-body: 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
+  --font-dnd-heading: 'Cinzel', 'Modesto Condensed', 'Book Antiqua', 'Palatino Linotype', serif;
+  --font-dnd-body: 'Libre Baskerville', 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
   --font-dnd-sans: 'Scaly Sans', 'Segoe UI', sans-serif;
 
   /* Grid dimensions */

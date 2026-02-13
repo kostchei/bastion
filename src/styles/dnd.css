@@ -2,18 +2,35 @@
    D&D 5e Character Sheet Theme
    ============================================ */
 
-/* Fonts */
+/* Fonts & Base Theme Variables */
 .theme-dnd {
     --border-dnd-thick: 2px solid var(--dnd-border);
     --border-dnd-thin: 1px solid var(--dnd-border);
-    --bg-dnd-paper: #ffffff;
+
+    /* Paper texture background - subtle noise */
+    --bg-dnd-paper: #fdfbf7;
+
+    /* Improved Colors */
+    --dnd-ink: #2b2b2b;
+    --dnd-red: #9e2a2b;
+    /* Richer red */
+    --dnd-gold: #c6a858;
+    /* Antique gold */
+    --dnd-border: #5c5c5c;
+    /* Softer dark grey border */
+    --dnd-section-bg: #e6dfc8;
+    /* Parchment header bg */
+
+    /* Shadows for "card" look */
+    --dnd-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Base D&D Cell Styling */
 .theme-dnd .cell {
-    font-family: var(--font-dnd-sans);
-    border-color: #d4c9b0;
-    /* Light parchment border by default */
+    font-family: var(--font-dnd-body);
+    border-color: #e0d6c2;
+    /* Very light border for grid lines */
+    color: var(--dnd-ink);
 }
 
 /* ─── Headers ─── */
@@ -27,116 +44,172 @@
 .theme-dnd .dnd-section-header {
     font-family: var(--font-dnd-heading);
     text-transform: uppercase;
-    border-bottom: var(--border-dnd-thick) !important;
-    background-color: #e0e0e0;
-    /* Fallback */
+    border-bottom: 2px solid var(--dnd-gold) !important;
+    background-color: var(--dnd-section-bg);
+    color: #4a3b2a;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 .theme-dnd .dnd-section-label {
-    font-family: var(--font-dnd-sans);
-    font-weight: bold;
+    font-family: var(--font-dnd-heading);
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #665c4a;
 }
 
 /* ─── Ability Scores ─── */
-/* Look like a box */
+/* Card-like styling for ability score blocks */
 .theme-dnd .dnd-ability-name {
     font-family: var(--font-dnd-heading);
-    background-color: var(--bg-dnd-paper);
-    border-top: var(--border-dnd-thick) !important;
-    border-left: var(--border-dnd-thick) !important;
-    border-right: none !important;
+    background-color: #f0ebe0;
+    border: 1px solid var(--dnd-border) !important;
     border-bottom: none !important;
-    border-radius: 8px 0 0 0;
+    border-radius: 6px 6px 0 0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: var(--dnd-shadow-sm);
 }
 
 .theme-dnd .dnd-ability-bg {
-    background-color: var(--bg-dnd-paper);
-    border-top: var(--border-dnd-thick) !important;
-    border-right: var(--border-dnd-thick) !important;
-    border-left: none !important;
-    border-bottom: none !important;
-    border-radius: 0 8px 0 0;
+    background-color: #f0ebe0;
+    /* Match name header */
+    border-top: 1px solid var(--dnd-border) !important;
+    border-right: 1px solid var(--dnd-border) !important;
+    border-radius: 0 6px 0 0;
 }
 
 .theme-dnd .dnd-ability-mod {
     font-family: var(--font-dnd-heading);
-    background-color: var(--bg-dnd-paper);
-    border-left: var(--border-dnd-thick) !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    /* Open to save box */
-    font-size: 24px !important;
+    background-color: #fff;
+    border: 1px solid var(--dnd-border) !important;
+    border-top: none !important;
+    border-right: 1px dashed #ccc !important;
+    /* Separator */
+    border-bottom: 1px solid var(--dnd-border) !important;
+    border-radius: 0 0 0 6px;
+    font-size: 26px !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .theme-dnd .dnd-ability-score {
-    background-color: var(--bg-dnd-paper);
-    border-right: var(--border-dnd-thick) !important;
+    background-color: #fff;
+    border: 1px solid var(--dnd-border) !important;
+    border-top: none !important;
     border-left: none !important;
-    border-bottom: none !important;
+    border-bottom: 1px solid var(--dnd-border) !important;
+    border-radius: 0 0 6px 0;
     font-size: 14px !important;
+    color: #666;
     vertical-align: top;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .theme-dnd .dnd-save-label {
-    background-color: var(--bg-dnd-paper);
-    border-left: var(--border-dnd-thick) !important;
-    border-bottom: var(--border-dnd-thick) !important;
-    border-radius: 0 0 0 8px;
+    /* Simplified look */
+    font-weight: bold;
+    font-size: 10px;
+    color: #555;
+    text-align: right;
+    padding-right: 4px;
 }
 
 .theme-dnd .dnd-save-value {
-    background-color: var(--bg-dnd-paper);
-    border-right: var(--border-dnd-thick) !important;
-    border-bottom: var(--border-dnd-thick) !important;
-    border-radius: 0 0 8px 0;
+    border-bottom: 1px solid #ccc !important;
+    background-color: rgba(0, 0, 0, 0.02);
 }
 
 .theme-dnd .dnd-save-value.proficient {
     font-weight: bold;
+    color: var(--dnd-ink);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* ─── Skills ─── */
 .theme-dnd .dnd-skill-name {
-    border-bottom: 1px solid #ccc !important;
+    border-bottom: 1px dotted #d4c9b0 !important;
     font-size: 11px !important;
     padding-left: 8px !important;
 }
 
 .theme-dnd .dnd-skill-bonus {
-    border-bottom: 1px solid #ccc !important;
+    border-bottom: 1px dotted #d4c9b0 !important;
     font-weight: bold;
+    font-family: var(--font-dnd-heading);
+    color: #444;
 }
 
 /* ─── Stats (AC, Init, Speed, HP) ─── */
 .theme-dnd .dnd-stat-header {
-    font-family: var(--font-dnd-sans);
-    font-size: 9px !important;
+    font-family: var(--font-dnd-heading);
+    font-size: 10px !important;
     text-transform: uppercase;
-    border: var(--border-dnd-thick) !important;
+    letter-spacing: 0.5px;
+    border: 1px solid var(--dnd-border) !important;
     border-bottom: none !important;
-    background: transparent;
+    background: #e6dfc8;
+    border-radius: 4px 4px 0 0;
+    color: #333;
 }
 
 .theme-dnd .dnd-stat-value {
-    border: var(--border-dnd-thick) !important;
+    border: 1px solid var(--dnd-border) !important;
     border-top: none !important;
     font-family: var(--font-dnd-heading);
-    font-size: 20px !important;
-    background: transparent;
+    font-size: 22px !important;
+    background: #fff;
+    border-radius: 0 0 4px 4px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
+/* Simple Shield for AC */
 .theme-dnd .dnd-ac-box,
 .theme-dnd .dnd-ac-value {
-    border: 3px solid var(--dnd-red) !important;
-    /* Shield shape approx */
-    background: white;
+    border: 2px solid var(--dnd-border) !important;
+    background: #fff;
+    /* Optional: Try to make it look a bit shield-like with radius if possible, but grid limits us */
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.theme-dnd .dnd-ac-header {
+    background: var(--dnd-border);
+    /* Dark top for shield */
+    color: #fff;
+    border: 1px solid var(--dnd-border) !important;
+    border-radius: 4px 4px 0 0;
+}
+
+/* HP Box */
 .theme-dnd .dnd-hp-box,
 .theme-dnd .dnd-hp-value {
-    border: var(--border-dnd-thick) !important;
+    border: 1px solid var(--dnd-border) !important;
+    background: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ─── Specialized Sections ─── */
+.theme-dnd .dnd-feature-name {
+    font-family: var(--font-dnd-heading);
+    color: var(--dnd-red);
+    border-bottom: 1px solid #e0e0e0 !important;
+    margin-bottom: 2px;
+}
+
+.theme-dnd .dnd-attack-label {
+    font-family: var(--font-dnd-heading);
+    font-weight: 700;
+    color: #555;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.theme-dnd .dnd-attack-value {
+    font-family: var(--font-dnd-heading);
+    font-weight: 700;
+    font-size: 14px;
 }
 
 /* ─── Print Specific Overrides ─── */
@@ -145,7 +218,8 @@
     /* Hide grid lines for D&D theme */
     .theme-dnd .cell {
         border: none !important;
-        /* Default no border */
+        background-color: transparent !important;
+        /* Save ink */
     }
 
     /* Re-apply specific borders */
@@ -153,45 +227,38 @@
     .theme-dnd .dnd-ability-bg,
     .theme-dnd .dnd-ability-mod,
     .theme-dnd .dnd-ability-score,
-    .theme-dnd .dnd-save-label,
-    .theme-dnd .dnd-save-value,
     .theme-dnd .dnd-stat-header,
     .theme-dnd .dnd-stat-value,
     .theme-dnd .dnd-ac-box,
     .theme-dnd .dnd-ac-value,
     .theme-dnd .dnd-hp-box,
     .theme-dnd .dnd-hp-value,
-    .theme-dnd .dnd-box-header,
-    .theme-dnd .dnd-box-value,
-    .theme-dnd .dnd-section-header,
-    .theme-dnd .dnd-skill-name,
-    .theme-dnd .dnd-skill-bonus {
-        /* These keep their borders defined above */
+    .theme-dnd .dnd-section-header {
+        border-style: solid !important;
+        border-color: #000 !important;
+        box-shadow: none !important;
+        /* No shadows in print */
+        background-color: transparent !important;
+        /* No bg based shading */
+    }
+
+    .theme-dnd .dnd-section-header {
+        border-bottom: 2px solid #000 !important;
+    }
+
+    /* Text contrast */
+    .theme-dnd .dnd-feature-name {
+        color: #000 !important;
+    }
+
+    .theme-dnd .dnd-ac-header {
+        background-color: #000 !important;
+        color: #fff !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
 
-    /* Force backgrounds */
-    .theme-dnd .dnd-ability-name,
-    .theme-dnd .dnd-ability-mod,
-    .theme-dnd .dnd-ability-score,
-    .theme-dnd .dnd-save-label,
-    .theme-dnd .dnd-save-value {
-        border-style: solid !important;
-        border-color: black !important;
-    }
-
-    .theme-dnd .dnd-skill-name,
-    .theme-dnd .dnd-skill-bonus {
-        border-bottom: 1px solid #bbb !important;
-    }
-
-    /* Hide the default cell borders from print.css if they conflict */
-    .theme-dnd.grid-table {
-        border-collapse: collapse;
-    }
-
-    /* Hide row/col headers for D&D sheet in print */
+    /* Force headers white too */
     .theme-dnd .col-header,
     .theme-dnd .row-header,
     .theme-dnd .grid-corner {
