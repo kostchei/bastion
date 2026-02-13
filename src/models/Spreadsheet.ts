@@ -8,6 +8,7 @@ export interface CellStyle {
     textAlign: 'left' | 'center' | 'right';
     color: string;
     backgroundColor: string;
+    locked: boolean;
 }
 
 export interface CellData {
@@ -27,6 +28,7 @@ export function defaultCellStyle(): CellStyle {
         textAlign: 'left',
         color: '',
         backgroundColor: '',
+        locked: false,
     };
 }
 

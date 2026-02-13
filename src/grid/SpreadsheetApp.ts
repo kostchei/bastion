@@ -9,6 +9,7 @@ import {
 } from '../models/Spreadsheet';
 import { processCell, DependencyGraph } from '../formula/FormulaEngine';
 import { createAutoSave, loadSpreadsheet, saveSpreadsheet, listSpreadsheets, deleteSpreadsheet } from '../storage/StorageManager';
+import { buildCharacterSheet } from '../sheets/characterSheet';
 
 /* ============ App State ============ */
 
@@ -170,6 +171,10 @@ function renderGrid(): void {
                     td.classList.add('has-formula');
                 }
             }
+            // Locked indicator
+            if (cell?.style.locked) {
+                td.classList.add('locked');
+            }
 
             // Click to select
             td.addEventListener('mousedown', (e) => {
@@ -329,16 +334,22 @@ function startDragSelect(startRow: number, startCol: number): void {
 
 function startEditing(): void {
     if (app.isEditing) return;
-    app.isEditing = true;
 
     const { row, col } = app.selectedCell;
+    const key = cellKey(row, col);
+    const cellData = app.spreadsheet.cells.get(key);
+    if (cellData?.style.locked) {
+        updateStatusBar('Cell is locked 🔒');
+        return;
+    }
+
+    app.isEditing = true;
     const td = getCellElement(row, col);
     if (!td) return;
 
     td.classList.add('editing');
 
-    const key = cellKey(row, col);
-    const cell = app.spreadsheet.cells.get(key);
+    const cell = cellData;
 
     const input = document.createElement('input');
     input.className = 'cell-editor';
@@ -443,7 +454,7 @@ function updateCellDisplay(row: number, col: number): void {
 
     // Remove existing children
     td.textContent = '';
-    td.classList.remove('has-formula', 'has-error', 'editing');
+    td.classList.remove('has-formula', 'has-error', 'editing', 'locked');
     td.style.cssText = '';
 
     if (cell && cell.type !== 'empty') {
@@ -456,6 +467,10 @@ function updateCellDisplay(row: number, col: number): void {
         if (cell.type === 'formula') {
             td.classList.add('has-formula');
         }
+    }
+    // Locked indicator
+    if (cell?.style.locked) {
+        td.classList.add('locked');
     }
 }
 
@@ -615,6 +630,11 @@ function wireToolbar(): void {
         app.autoSave(app.spreadsheet);
     });
 
+    // Lock / Unlock
+    $<HTMLButtonElement>('btn-lock').addEventListener('click', () => {
+        toggleLock();
+    });
+
     // Print
     $<HTMLButtonElement>('btn-print').addEventListener('click', () => {
         window.print();
@@ -647,6 +667,30 @@ function wireToolbar(): void {
     // Open
     $<HTMLButtonElement>('btn-open').addEventListener('click', () => {
         openFileManager();
+    });
+
+    // New Character Sheet
+    $<HTMLButtonElement>('btn-char-sheet').addEventListener('click', () => {
+        if (confirm('Create a new D&D Character Sheet? Current work will be saved first.')) {
+            saveSpreadsheet(app.spreadsheet).then(() => {
+                app.spreadsheet = buildCharacterSheet();
+                app.depGraph = new DependencyGraph();
+
+                // Process formulas to build dependency graph and compute values
+                for (const [key, cell] of app.spreadsheet.cells) {
+                    if (cell.type === 'formula') {
+                        processCell(key, cell.raw, app.spreadsheet, app.depGraph);
+                    }
+                }
+
+                $<HTMLInputElement>('sheet-name').value = app.spreadsheet.name;
+                applyTheme(app.spreadsheet.activeTheme);
+                renderGrid();
+                selectCell(0, 0);
+                app.autoSave(app.spreadsheet);
+                updateStatusBar('D&D Character Sheet created ⚔️');
+            });
+        }
     });
 
     // File manager modal close
@@ -823,6 +867,30 @@ function toggleStyle<K extends keyof CellStyle>(
     applyStyleToSelection(style => { (style[prop] as CellStyle[K]) = newVal; });
 }
 
+function toggleLock(): void {
+    const cells = getSelectedCells();
+    // Determine new lock state based on first selected cell (toggle)
+    const firstCell = getCell(app.spreadsheet, cells[0]);
+    const newLocked = !firstCell.style.locked;
+
+    for (const key of cells) {
+        const cell = getCell(app.spreadsheet, key);
+        cell.style.locked = newLocked;
+        const match = key.match(/^([A-Z]+)(\d+)$/);
+        if (match) {
+            let c = 0;
+            for (let i = 0; i < match[1].length; i++) c = c * 26 + (match[1].charCodeAt(i) - 64);
+            c -= 1;
+            const r = parseInt(match[2], 10) - 1;
+            updateCellDisplay(r, c);
+        }
+    }
+
+    $<HTMLButtonElement>('btn-lock').classList.toggle('active', newLocked);
+    updateStatusBar(newLocked ? 'Cells locked 🔒' : 'Cells unlocked 🔓');
+    app.autoSave(app.spreadsheet);
+}
+
 function getSelectedCells(): string[] {
     if (app.selectionRange) {
         const { startRow, startCol, endRow, endCol } = app.selectionRange;
@@ -850,6 +918,12 @@ function wireFormulaBar(): void {
         if (e.key === 'Enter') {
             e.preventDefault();
             const key = cellKey(app.selectedCell.row, app.selectedCell.col);
+            const cellData = app.spreadsheet.cells.get(key);
+            if (cellData?.style.locked) {
+                updateStatusBar('Cell is locked 🔒');
+                formulaInput.value = cellData.raw;
+                return;
+            }
             processCell(key, formulaInput.value, app.spreadsheet, app.depGraph);
             updateCellDisplay(app.selectedCell.row, app.selectedCell.col);
             updateDependentDisplays(key);
@@ -962,7 +1036,13 @@ function wireKeyboard(): void {
 
 function deleteSelectedCells(): void {
     const cells = getSelectedCells();
+    let skippedLocked = false;
     for (const key of cells) {
+        const cellData = app.spreadsheet.cells.get(key);
+        if (cellData?.style.locked) {
+            skippedLocked = true;
+            continue; // Skip locked cells
+        }
         processCell(key, '', app.spreadsheet, app.depGraph);
         const match = key.match(/^([A-Z]+)(\d+)$/);
         if (match) {
@@ -973,6 +1053,9 @@ function deleteSelectedCells(): void {
             updateCellDisplay(r, c);
             updateDependentDisplays(key);
         }
+    }
+    if (skippedLocked) {
+        updateStatusBar('Some cells are locked and were not deleted 🔒');
     }
     app.autoSave(app.spreadsheet);
 
