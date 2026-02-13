@@ -5,6 +5,7 @@ import {
     createSpreadsheet,
     getCell,
     colToLetter,
+    letterToCol,
     cellKey,
 } from '../models/Spreadsheet';
 import { processCell, DependencyGraph } from '../formula/FormulaEngine';
@@ -224,6 +225,10 @@ function applyCellStyle(td: HTMLElement, style: CellStyle): void {
     if (style.textAlign !== 'left') td.style.textAlign = style.textAlign;
     if (style.color) td.style.color = style.color;
     if (style.backgroundColor) td.style.backgroundColor = style.backgroundColor;
+    if (style.border && style.border !== 'none') {
+        const widths: Record<string, string> = { thin: '1px', medium: '2px', thick: '3px' };
+        td.style.border = `${widths[style.border] ?? '1px'} solid currentColor`;
+    }
 }
 
 /* ============ Cell Selection ============ */
@@ -254,6 +259,17 @@ function selectCell(row: number, col: number): void {
     $<HTMLDivElement>('cell-address').textContent = key;
     const cell = app.spreadsheet.cells.get(key);
     $<HTMLInputElement>('formula-input').value = cell?.raw ?? '';
+
+    // Update toolbar buttons based on selection
+    const style = cell?.style;
+    const borderBtn = $<HTMLButtonElement>('btn-border');
+    if (style?.border && style.border !== 'none') {
+        borderBtn.classList.add('active');
+        borderBtn.textContent = style.border === 'thick' ? '🔳' : (style.border === 'medium' ? '回' : '🔲');
+    } else {
+        borderBtn.classList.remove('active');
+        borderBtn.textContent = '🔲';
+    }
 
     // Update toolbar to reflect cell style
     updateToolbarFromCell(cell);
@@ -645,6 +661,11 @@ function wireToolbar(): void {
         toggleLock();
     });
 
+    // Border Toggle
+    $<HTMLButtonElement>('btn-border').addEventListener('click', () => {
+        toggleBorder();
+    });
+
     // Print
     $<HTMLButtonElement>('btn-print').addEventListener('click', () => {
         window.print();
@@ -910,6 +931,42 @@ function toggleLock(): void {
     $<HTMLButtonElement>('btn-lock').classList.toggle('active', newLocked);
     updateStatusBar(newLocked ? 'Cells locked 🔒' : 'Cells unlocked 🔓');
     app.autoSave(app.spreadsheet);
+}
+
+function toggleBorder(): void {
+    const cells = getSelectedCells();
+    const firstCell = getCell(app.spreadsheet, cells[0]);
+
+    // Cycle: none -> thin -> medium -> thick -> none
+    const current = firstCell.style.border || 'none';
+    let next: 'none' | 'thin' | 'medium' | 'thick' = 'thin';
+    if (current === 'thin') next = 'medium';
+    else if (current === 'medium') next = 'thick';
+    else if (current === 'thick') next = 'none';
+
+    for (const key of cells) {
+        const cell = getCell(app.spreadsheet, key);
+        cell.style.border = next;
+
+        const match = key.match(/^([A-Z]+)(\d+)$/);
+        if (match) {
+            const c = letterToCol(match[1]);
+            const r = parseInt(match[2], 10) - 1;
+            updateCellDisplay(r, c);
+        }
+    }
+
+    updateStatusBar(`Borders: ${next}`);
+    app.autoSave(app.spreadsheet);
+
+    const borderBtn = $<HTMLButtonElement>('btn-border');
+    if (next !== 'none') {
+        borderBtn.classList.add('active');
+        borderBtn.textContent = next === 'thick' ? '🔳' : (next === 'medium' ? '回' : '🔲');
+    } else {
+        borderBtn.classList.remove('active');
+        borderBtn.textContent = '🔲';
+    }
 }
 
 function getSelectedCells(): string[] {

@@ -94,10 +94,13 @@ export async function loadSpreadsheet(name: string): Promise<SpreadsheetState | 
                 }
                 // Deserialize plain object to Map
                 const cells = new Map(Object.entries(data.cells));
-                // Migration: ensure locked field exists on all cell styles
+                // Migration: ensure locked and border fields exist on all cell styles
                 for (const cell of cells.values()) {
                     if (cell.style && cell.style.locked === undefined) {
                         cell.style.locked = false;
+                    }
+                    if (cell.style && (cell.style as any).border === undefined) {
+                        (cell.style as any).border = 'none';
                     }
                 }
                 resolve({

@@ -4,7 +4,7 @@
 
 @media print {
     @page {
-        margin: 0.5in;
+        margin: 0.4in;
     }
 
     @page :first {
@@ -50,29 +50,47 @@
         page-break-inside: avoid;
     }
 
-    /* Clean cell styling for print */
+    /* Cells: preserve inline bg colours but add solid borders */
     .cell {
-        background: white !important;
-        border: 0.5pt solid #cccccc !important;
+        border: 0.5pt solid #333 !important;
         color: black !important;
         overflow: visible !important;
         white-space: normal !important;
         padding: 2pt 4pt !important;
     }
 
+    /* Monochrome Theme Overrides for Print: Pure B&W, stronger borders */
+    .theme-monochrome .cell {
+        background-color: white !important;
+        color: black !important;
+        border: 1pt solid black !important;
+    }
+
+    .theme-monochrome .col-header,
+    .theme-monochrome .row-header,
+    .theme-monochrome .grid-corner {
+        background-color: white !important;
+        color: black !important;
+        border: 1pt solid black !important;
+    }
+
     .cell.selected,
     .cell.in-range {
         outline: none !important;
-        background: white !important;
     }
 
-    /* Header styling for print */
+    /* Hide lock icons in print */
+    .cell.locked::after {
+        display: none !important;
+    }
+
+    /* Header styling for print (default) */
     .col-header,
     .row-header,
     .grid-corner {
-        background: #f0f0f0 !important;
-        color: #333 !important;
-        border: 0.5pt solid #999 !important;
+        background: #e0e0e0 !important;
+        color: #000 !important;
+        border: 0.5pt solid #000 !important;
         font-weight: bold !important;
     }
 

@@ -37,15 +37,16 @@
   --transition-normal: 200ms ease;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.12);
-  --shadow-lg: 0 4px 16px rgba(0,0,0,0.16);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.16);
 }
 
 /* ============================================
    Theme: Midnight (default)
    ============================================ */
-.theme-midnight, :root {
+.theme-midnight,
+:root {
   --bg-app: #0f1117;
   --bg-toolbar: #1a1d27;
   --bg-formula-bar: #1a1d27;
@@ -228,38 +229,63 @@
 }
 
 /* ============================================
-   Theme: Monochrome
+   Theme: Monochrome — Print-Ready
+   Strong borders, pure black/white, no colour.
+   Switch to this theme before printing a sheet.
    ============================================ */
 .theme-monochrome {
-  --bg-app: #fafafa;
-  --bg-toolbar: #f0f0f0;
-  --bg-formula-bar: #f0f0f0;
+  --bg-app: #ffffff;
+  --bg-toolbar: #f2f2f2;
+  --bg-formula-bar: #f2f2f2;
   --bg-grid: #ffffff;
   --bg-cell: #ffffff;
-  --bg-cell-alt: #f8f8f8;
-  --bg-header: #e8e8e8;
-  --bg-header-hover: #dcdcdc;
-  --bg-selected: rgba(33, 33, 33, 0.08);
-  --bg-status: #e8e8e8;
+  --bg-cell-alt: #ffffff;
+  --bg-header: #e0e0e0;
+  --bg-header-hover: #d0d0d0;
+  --bg-selected: rgba(0, 0, 0, 0.06);
+  --bg-status: #e0e0e0;
 
-  --border-grid: #d0d0d0;
-  --border-header: #c0c0c0;
-  --border-toolbar: #d0d0d0;
-  --border-focus: #333333;
+  --border-grid: #000000;
+  --border-header: #000000;
+  --border-toolbar: #999999;
+  --border-focus: #000000;
 
-  --text-primary: #1a1a1a;
-  --text-secondary: #555555;
-  --text-muted: #888888;
-  --text-header: #555555;
-  --text-toolbar: #333333;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --text-header: #000000;
+  --text-toolbar: #000000;
 
-  --accent: #333333;
-  --accent-hover: #111111;
-  --accent-glow: rgba(33, 33, 33, 0.2);
+  --accent: #000000;
+  --accent-hover: #333333;
+  --accent-glow: rgba(0, 0, 0, 0.15);
 
-  --selection-range: rgba(33, 33, 33, 0.05);
-  --selection-border: #333333;
+  --selection-range: rgba(0, 0, 0, 0.04);
+  --selection-border: #000000;
 
   --btn-hover: #e0e0e0;
-  --btn-active: #d0d0d0;
+  --btn-active: #cccccc;
+}
+
+/* Monochrome: strip cell background colours → force BW, preserve borders */
+.theme-monochrome .cell {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-right: 1px solid #000 !important;
+  border-bottom: 1px solid #000 !important;
+}
+
+/* Force headers white too */
+.theme-monochrome .col-header,
+.theme-monochrome .row-header,
+.theme-monochrome .grid-corner {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Remove grayscale filter - we want pure white, not grey */
+.theme-monochrome .grid-table {
+  filter: none;
+  -webkit-filter: none;
 }

@@ -20,6 +20,7 @@ interface SheetCell {
     align?: 'left' | 'center' | 'right';
     bg?: string;
     color?: string;
+    border?: 'none' | 'thin' | 'medium' | 'thick';
 }
 
 /* ---- Colour palette ---- */
@@ -67,6 +68,7 @@ function makeCell(opts: SheetCell): CellData {
         fontSize: opts.fontSize ?? 12,
         color: opts.color ?? '',
         backgroundColor: opts.bg ?? '',
+        border: opts.border ?? 'none',
     };
 
     const isFormula = opts.value.startsWith('=');
@@ -134,12 +136,12 @@ export function buildCharacterSheet(): SpreadsheetState {
     for (let c = 4; c < NUM_COLS; c++) cells.push({ row: 1, col: c, value: '', bg: C.subBg });
 
     // ─── ABILITY SCORES SECTION HEADER ───
-    cells.push({ row: 3, col: 0, value: 'Ability Modifiers', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
-    cells.push({ row: 3, col: 1, value: '', bg: C.secHdr });
-    cells.push({ row: 3, col: 2, value: '', bg: C.secHdr });
-    cells.push({ row: 3, col: 3, value: 'Saving Throws & Skills', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
-    cells.push({ row: 3, col: 4, value: '', bg: C.secHdr });
-    cells.push({ row: 3, col: 5, value: 'Prof', bold: true, fontSize: 9, align: 'center', bg: C.secHdr, color: C.secHdrTx });
+    cells.push({ row: 3, col: 0, value: 'Ability Modifiers', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center', border: 'medium' });
+    cells.push({ row: 3, col: 1, value: '', bg: C.secHdr, border: 'medium' });
+    cells.push({ row: 3, col: 2, value: '', bg: C.secHdr, border: 'medium' });
+    cells.push({ row: 3, col: 3, value: 'Saving Throws & Skills', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center', border: 'medium' });
+    cells.push({ row: 3, col: 4, value: '', bg: C.secHdr, border: 'medium' });
+    cells.push({ row: 3, col: 5, value: 'Prof', bold: true, fontSize: 9, align: 'center', bg: C.secHdr, color: C.secHdrTx, border: 'medium' });
 
     // Proficiency bonus formula in F5 (row 4 col 5)
     cells.push({ row: 4, col: 5, value: '=IF(B1<5,2,IF(B1<9,3,IF(B1<13,4,IF(B1<17,5,6))))', bold: true, fontSize: 16, align: 'center', bg: C.secBg, color: C.acGold });
@@ -241,26 +243,26 @@ export function buildCharacterSheet(): SpreadsheetState {
     cells.push({ row: inspRow, col: 1, value: '', locked: false, fontSize: 14, align: 'center', bg: C.inspBg });
 
     // ─── INITIATIVE & SPEED ───
-    cells.push({ row: 4, col: 6, value: 'INITIATIVE', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
-    cells.push({ row: 4, col: 7, value: 'SPEED', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
-    cells.push({ row: 5, col: 6, value: `=${modRefs['DEX']}`, bold: true, fontSize: 20, align: 'center', bg: C.secBg, color: C.value });
-    cells.push({ row: 5, col: 7, value: '30 Feet', locked: false, bold: true, fontSize: 14, align: 'center', bg: C.secBg, color: C.editable });
+    cells.push({ row: 4, col: 6, value: 'INITIATIVE', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center', border: 'medium' });
+    cells.push({ row: 4, col: 7, value: 'SPEED', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center', border: 'medium' });
+    cells.push({ row: 5, col: 6, value: `=${modRefs['DEX']}`, bold: true, fontSize: 20, align: 'center', bg: C.secBg, color: C.value, border: 'thin' });
+    cells.push({ row: 5, col: 7, value: '30 Feet', locked: false, bold: true, fontSize: 14, align: 'center', bg: C.secBg, color: C.editable, border: 'thin' });
 
     // ─── HIT POINT MAXIMUM ───
-    cells.push({ row: 7, col: 6, value: 'HIT POINT MAXIMUM', bold: true, fontSize: 10, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
-    cells.push({ row: 7, col: 7, value: '', bg: C.secHdr });
-    cells.push({ row: 8, col: 6, value: '', bg: C.secBg });
-    cells.push({ row: 8, col: 7, value: '8', locked: false, bold: true, fontSize: 26, align: 'center', bg: C.secBg, color: C.acRed });
+    cells.push({ row: 7, col: 6, value: 'HIT POINT MAXIMUM', bold: true, fontSize: 10, bg: C.secHdr, color: C.secHdrTx, align: 'center', border: 'medium' });
+    cells.push({ row: 7, col: 7, value: '', bg: C.secHdr, border: 'medium' });
+    cells.push({ row: 8, col: 6, value: '', bg: C.secBg, border: 'thin' });
+    cells.push({ row: 8, col: 7, value: '8', locked: false, bold: true, fontSize: 26, align: 'center', bg: C.secBg, color: C.acRed, border: 'thick' });
     cells.push({ row: 9, col: 6, value: 'Place Hit Point', fontSize: 9, bg: C.secBg, italic: true, color: C.label });
     cells.push({ row: 9, col: 7, value: 'Tokens here.', fontSize: 9, bg: C.secBg, italic: true, color: C.label });
     cells.push({ row: 10, col: 6, value: 'Remove them as', fontSize: 9, bg: C.secBg, italic: true, color: C.label });
     cells.push({ row: 10, col: 7, value: 'you take damage.', fontSize: 9, bg: C.secBg, italic: true, color: C.label });
 
     // ─── ARMOR CLASS ───
-    cells.push({ row: 4, col: 9, value: 'ARMOR CLASS', bold: true, fontSize: 11, bg: C.acRed, color: '#ffffff', align: 'center' });
-    cells.push({ row: 4, col: 10, value: '', bg: C.acRed });
-    cells.push({ row: 5, col: 9, value: '', bg: C.acBg });
-    cells.push({ row: 5, col: 10, value: '9', locked: false, bold: true, fontSize: 26, align: 'center', bg: C.acBg, color: C.acRed });
+    cells.push({ row: 4, col: 9, value: 'ARMOR CLASS', bold: true, fontSize: 11, bg: C.acRed, color: '#ffffff', align: 'center', border: 'medium' });
+    cells.push({ row: 4, col: 10, value: '', bg: C.acRed, border: 'medium' });
+    cells.push({ row: 5, col: 9, value: '', bg: C.acBg, border: 'thin' });
+    cells.push({ row: 5, col: 10, value: '9', locked: false, bold: true, fontSize: 26, align: 'center', bg: C.acBg, color: C.acRed, border: 'thick' });
     cells.push({ row: 6, col: 9, value: 'Wear Light or Medium', fontSize: 9, bg: C.acBg, italic: true, color: C.label });
     cells.push({ row: 6, col: 10, value: 'Armor by placing an', fontSize: 9, bg: C.acBg, italic: true, color: C.label });
     cells.push({ row: 7, col: 9, value: 'Equipment Card for', fontSize: 9, bg: C.acBg, italic: true, color: C.label });
@@ -284,13 +286,13 @@ export function buildCharacterSheet(): SpreadsheetState {
     cells.push({ row: 17, col: 7, value: '', bg: C.secBg });
 
     // EQUIPMENT banner
-    cells.push({ row: 19, col: 6, value: 'EQUIPMENT', bold: true, fontSize: 13, bg: C.hdrBg, color: C.hdrText, align: 'center' });
-    cells.push({ row: 19, col: 7, value: '', bg: C.hdrBg });
+    cells.push({ row: 19, col: 6, value: 'EQUIPMENT', bold: true, fontSize: 13, bg: C.hdrBg, color: C.hdrText, align: 'center', border: 'medium' });
+    cells.push({ row: 19, col: 7, value: '', bg: C.hdrBg, border: 'medium' });
 
     // ─── CONCENTRATION SPELL ───
-    cells.push({ row: 12, col: 9, value: 'EQUIPMENT', bold: true, fontSize: 13, bg: C.hdrBg, color: C.hdrText, align: 'center' });
-    cells.push({ row: 12, col: 10, value: '', bg: C.hdrBg });
-    cells.push({ row: 12, col: 11, value: '', bg: C.hdrBg });
+    cells.push({ row: 12, col: 9, value: 'EQUIPMENT', bold: true, fontSize: 13, bg: C.hdrBg, color: C.hdrText, align: 'center', border: 'medium' });
+    cells.push({ row: 12, col: 10, value: '', bg: C.hdrBg, border: 'medium' });
+    cells.push({ row: 12, col: 11, value: '', bg: C.hdrBg, border: 'medium' });
     cells.push({ row: 13, col: 9, value: 'Concentration Spell', bold: true, fontSize: 11, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
     cells.push({ row: 13, col: 10, value: '', bg: C.secHdr });
     cells.push({ row: 13, col: 11, value: '', bg: C.secHdr });
@@ -300,9 +302,9 @@ export function buildCharacterSheet(): SpreadsheetState {
     cells.push({ row: 15, col: 10, value: 'that Spell Card here.', fontSize: 9, bg: C.secBg, italic: true, color: C.label });
 
     // SPELL banner
-    cells.push({ row: 19, col: 9, value: 'SPELL', bold: true, fontSize: 13, bg: C.hdrBg, color: C.hdrText, align: 'center' });
-    cells.push({ row: 19, col: 10, value: '', bg: C.hdrBg });
-    cells.push({ row: 19, col: 11, value: '', bg: C.hdrBg });
+    cells.push({ row: 19, col: 9, value: 'SPELL', bold: true, fontSize: 13, bg: C.hdrBg, color: C.hdrText, align: 'center', border: 'medium' });
+    cells.push({ row: 19, col: 10, value: '', bg: C.hdrBg, border: 'medium' });
+    cells.push({ row: 19, col: 11, value: '', bg: C.hdrBg, border: 'medium' });
 
     // ─── ATTACK ROLLS ───
     const profRef = 'F5';
@@ -320,8 +322,8 @@ export function buildCharacterSheet(): SpreadsheetState {
     cells.push({ row: 21, col: 10, value: `=8+${modRefs['WIS']}+${profRef}`, bold: true, fontSize: 16, align: 'center', bg: C.secBg, color: C.acPurple });
 
     // ─── CLASS FEATURES ───
-    cells.push({ row: 4, col: 13, value: 'Cleric Class Features', bold: true, fontSize: 13, bg: C.secHdr, color: C.secHdrTx, align: 'center' });
-    cells.push({ row: 4, col: 14, value: '', bg: C.secHdr });
+    cells.push({ row: 4, col: 13, value: 'Cleric Class Features', bold: true, fontSize: 13, bg: C.secHdr, color: C.secHdrTx, align: 'center', border: 'medium' });
+    cells.push({ row: 4, col: 14, value: '', bg: C.secHdr, border: 'medium' });
 
     cells.push({ row: 5, col: 13, value: 'Spellcasting', bold: true, fontSize: 11, bg: C.secBg, color: C.label });
     cells.push({ row: 6, col: 13, value: 'Remove 1 Power Token below', fontSize: 9, bg: C.secBg, color: C.label });
@@ -356,7 +358,7 @@ export function buildCharacterSheet(): SpreadsheetState {
 
     // ─── WHAT YOU NEED TO PLAY ───
     const needRow = 24;
-    for (let c = 0; c <= 4; c++) cells.push({ row: needRow, col: c, value: c === 0 ? 'WHAT YOU NEED TO PLAY' : '', bold: true, fontSize: 10, bg: C.acRed, color: '#ffffff' });
+    for (let c = 0; c <= 4; c++) cells.push({ row: needRow, col: c, value: c === 0 ? 'WHAT YOU NEED TO PLAY' : '', bold: true, fontSize: 10, bg: C.acRed, color: '#ffffff', border: 'medium' });
     cells.push({ row: needRow + 1, col: 0, value: 'Equipment Cards:', bold: true, fontSize: 9, bg: C.secBg, color: C.label });
     cells.push({ row: needRow + 1, col: 1, value: 'Chain Shirt, Mace', locked: false, fontSize: 9, bg: C.secBg, color: C.editable });
     cells.push({ row: needRow + 2, col: 0, value: 'Spell Cards:', bold: true, fontSize: 9, bg: C.secBg, color: C.label });

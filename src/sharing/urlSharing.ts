@@ -34,6 +34,7 @@ interface CompactStyle {
     c?: string;         // color (omit if '')
     bg?: string;        // backgroundColor (omit if '')
     l?: boolean;        // locked (omit if false)
+    b?: string;         // border (omit if 'none')
 }
 
 /* ---- Compress (state → URL hash) ---- */
@@ -51,6 +52,7 @@ function compactStyle(cell: CellData): CompactStyle | undefined {
     if (s.color !== '') { cs.c = s.color; hasAny = true; }
     if (s.backgroundColor !== '') { cs.bg = s.backgroundColor; hasAny = true; }
     if (s.locked) { cs.l = true; hasAny = true; }
+    if (s.border && s.border !== 'none') { cs.b = s.border; hasAny = true; }
 
     return hasAny ? cs : undefined;
 }
@@ -102,6 +104,7 @@ function expandCell(cc: CompactCell): CellData {
         if (cc.s.c) style.color = cc.s.c;
         if (cc.s.bg) style.backgroundColor = cc.s.bg;
         if (cc.s.l) style.locked = true;
+        if (cc.s.b) style.border = cc.s.b as 'none' | 'thin' | 'medium' | 'thick';
     }
 
     return {
