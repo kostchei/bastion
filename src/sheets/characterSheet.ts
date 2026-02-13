@@ -22,6 +22,7 @@ interface SheetCell {
     color?: string;
     border?: 'none' | 'thin' | 'medium' | 'thick';
     className?: string;
+    options?: string[];
 }
 
 /* ---- Colour palette ---- */
@@ -79,6 +80,7 @@ function makeCell(opts: SheetCell): CellData {
         computed: isFormula ? '' : opts.value,
         type: isFormula ? 'formula' : (opts.value === '' ? 'empty' : 'text'),
         style,
+        options: opts.options,
     };
 }
 
@@ -132,7 +134,10 @@ export function buildCharacterSheet(): SpreadsheetState {
     cells.push({ row: 0, col: 0, value: 'LEVEL', bold: true, fontSize: 10, bg: C.hdrBg, color: C.hdrText, align: 'center', className: 'dnd-header-label' });
     cells.push({ row: 0, col: 1, value: '1', locked: false, bold: true, fontSize: 18, bg: C.hdrBg, color: C.hdrAccent, align: 'center', className: 'dnd-header-value' });
     cells.push({ row: 0, col: 2, value: 'CLASS', bold: true, fontSize: 10, bg: C.hdrBg, color: C.hdrText, align: 'right', className: 'dnd-header-label' });
-    cells.push({ row: 0, col: 3, value: 'Cleric', locked: false, bold: true, fontSize: 22, bg: C.hdrBg, color: C.hdrText, align: 'left', className: 'dnd-header-value' });
+    cells.push({
+        row: 0, col: 3, value: 'Cleric', locked: false, bold: true, fontSize: 22, bg: C.hdrBg, color: C.hdrText, align: 'left', className: 'dnd-header-value',
+        options: ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard']
+    });
     for (let c = 4; c < NUM_COLS; c++) cells.push({ row: 0, col: c, value: '', bg: C.hdrBg, className: 'dnd-header-bg' });
 
     // Subtitle

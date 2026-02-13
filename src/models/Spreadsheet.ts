@@ -19,6 +19,7 @@ export interface CellData {
     type: 'text' | 'number' | 'formula' | 'empty';
     style: CellStyle;
     error?: string;
+    options?: string[]; // Dropdown options
 }
 
 export function defaultCellStyle(): CellStyle {
@@ -55,6 +56,7 @@ export interface SpreadsheetState {
     activeTheme: string;
     numCols: number;
     numRows: number;
+    isProtected: boolean;
 }
 
 export function createSpreadsheet(
@@ -73,6 +75,7 @@ export function createSpreadsheet(
         activeTheme: 'midnight',
         numCols,
         numRows,
+        isProtected: true, // Default to protected
     };
 }
 

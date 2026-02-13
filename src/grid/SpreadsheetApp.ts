@@ -77,6 +77,7 @@ export async function initApp(): Promise<void> {
     });
 
     updateStatusBar('Ready');
+    updateProtectionUI();
 }
 
 /* ============ Theme ============ */
@@ -367,8 +368,10 @@ function startEditing(): void {
     const { row, col } = app.selectedCell;
     const key = cellKey(row, col);
     const cellData = app.spreadsheet.cells.get(key);
-    if (cellData?.style.locked) {
-        updateStatusBar('Cell is locked 🔒');
+
+    // Only enforce lock if sheet is protected
+    if (app.spreadsheet.isProtected && cellData?.style.locked) {
+        updateStatusBar('Cell is locked 🔒 (Disable Protection to edit)');
         return;
     }
 
@@ -379,12 +382,36 @@ function startEditing(): void {
     td.classList.add('editing');
 
     const cell = cellData;
+    let input: HTMLInputElement | HTMLSelectElement;
 
-    const input = document.createElement('input');
-    input.className = 'cell-editor';
-    input.type = 'text';
-    input.value = cell?.raw ?? '';
-    input.spellcheck = false;
+    if (cell?.options && cell.options.length > 0) {
+        // Dropdown
+        input = document.createElement('select');
+        input.className = 'cell-editor';
+
+        // Add empty option if no value currently
+        if (!cell.raw) {
+            const emptyOpt = document.createElement('option');
+            emptyOpt.value = '';
+            emptyOpt.text = '';
+            input.appendChild(emptyOpt);
+        }
+
+        for (const opt of cell.options) {
+            const option = document.createElement('option');
+            option.value = opt;
+            option.textContent = opt;
+            if (opt === cell.raw) option.selected = true;
+            input.appendChild(option);
+        }
+    } else {
+        // Text Input
+        input = document.createElement('input');
+        input.className = 'cell-editor';
+        input.type = 'text';
+        input.value = cell?.raw ?? '';
+        input.spellcheck = false;
+    }
 
     // Inherit cell style
     if (cell) {
@@ -394,17 +421,18 @@ function startEditing(): void {
         if (cell.style.textAlign !== 'left') input.style.textAlign = cell.style.textAlign;
     }
 
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
+    input.addEventListener('keydown', (e: Event) => {
+        const ke = e as KeyboardEvent;
+        if (ke.key === 'Enter') {
+            ke.preventDefault();
             commitEdit();
             moveSelection(1, 0); // Move down
-        } else if (e.key === 'Escape') {
+        } else if (ke.key === 'Escape') {
             cancelEdit();
-        } else if (e.key === 'Tab') {
-            e.preventDefault();
+        } else if (ke.key === 'Tab') {
+            ke.preventDefault();
             commitEdit();
-            moveSelection(0, e.shiftKey ? -1 : 1);
+            moveSelection(0, ke.shiftKey ? -1 : 1);
         }
     });
 
@@ -416,7 +444,10 @@ function startEditing(): void {
     td.textContent = '';
     td.appendChild(input);
     input.focus();
-    input.select();
+    // Select all text only if it's an input
+    if (input instanceof HTMLInputElement) {
+        input.select();
+    }
 }
 
 function commitEdit(): void {
@@ -427,7 +458,7 @@ function commitEdit(): void {
     const td = getCellElement(row, col);
     if (!td) return;
 
-    const input = td.querySelector('.cell-editor') as HTMLInputElement | null;
+    const input = td.querySelector('.cell-editor') as HTMLInputElement | HTMLSelectElement | null;
     if (!input) return;
 
     const raw = input.value;
@@ -667,6 +698,11 @@ function wireToolbar(): void {
     // Border Toggle
     $<HTMLButtonElement>('btn-border').addEventListener('click', () => {
         toggleBorder();
+    });
+
+    // Protection Toggle
+    $<HTMLButtonElement>('btn-protect').addEventListener('click', () => {
+        toggleProtection();
     });
 
     // Print
@@ -969,6 +1005,29 @@ function toggleBorder(): void {
     } else {
         borderBtn.classList.remove('active');
         borderBtn.textContent = '🔲';
+    }
+}
+
+function toggleProtection(): void {
+    app.spreadsheet.isProtected = !app.spreadsheet.isProtected;
+    updateProtectionUI();
+    app.autoSave(app.spreadsheet);
+}
+
+function updateProtectionUI(): void {
+    const isProtected = app.spreadsheet.isProtected;
+    const btn = $<HTMLButtonElement>('btn-protect');
+
+    if (isProtected) {
+        btn.classList.add('active');
+        btn.innerHTML = '🛡️'; // Shield
+        btn.title = 'Sheet is Protected (Click to Unlock)';
+        updateStatusBar('Sheet Protection Enabled 🛡️');
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '🔓'; // Open lock or broken shield
+        btn.title = 'Sheet is Unprotected (Click to Protect)';
+        updateStatusBar('Sheet Protection Disabled 🔓');
     }
 }
 
