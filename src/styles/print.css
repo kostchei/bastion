@@ -1,0 +1,104 @@
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+    @page {
+        margin: 0.5in;
+    }
+
+    @page :first {
+        margin-top: 0.3in;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 10pt !important;
+    }
+
+    #app {
+        height: auto;
+        overflow: visible;
+    }
+
+    /* Hide UI chrome */
+    .toolbar,
+    .formula-bar,
+    .status-bar,
+    .col-resize-handle,
+    .row-resize-handle {
+        display: none !important;
+    }
+
+    /* Grid fills page */
+    .grid-wrapper {
+        overflow: visible !important;
+        flex: none;
+    }
+
+    .grid-container {
+        display: block;
+    }
+
+    .grid-table {
+        width: 100% !important;
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    /* Clean cell styling for print */
+    .cell {
+        background: white !important;
+        border: 0.5pt solid #cccccc !important;
+        color: black !important;
+        overflow: visible !important;
+        white-space: normal !important;
+        padding: 2pt 4pt !important;
+    }
+
+    .cell.selected,
+    .cell.in-range {
+        outline: none !important;
+        background: white !important;
+    }
+
+    /* Header styling for print */
+    .col-header,
+    .row-header,
+    .grid-corner {
+        background: #f0f0f0 !important;
+        color: #333 !important;
+        border: 0.5pt solid #999 !important;
+        font-weight: bold !important;
+    }
+
+    /* No sticky positioning in print */
+    .col-header,
+    .row-header,
+    .grid-corner {
+        position: static !important;
+    }
+}
+
+/* Print-specific classes toggled by JS */
+.print-landscape {
+    @page {
+        size: landscape;
+    }
+}
+
+.print-a4 {
+    @page {
+        size: A4;
+    }
+}
+
+.print-letter {
+    @page {
+        size: letter;
+    }
+}

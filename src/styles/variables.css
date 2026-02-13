@@ -1,0 +1,265 @@
+/* ============================================
+   Design System — CSS Custom Properties
+   ============================================ */
+
+:root {
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  /* Grid dimensions */
+  --cell-default-width: 100px;
+  --cell-min-width: 40px;
+  --cell-default-height: 28px;
+  --cell-min-height: 22px;
+  --header-width: 50px;
+  --header-height: 28px;
+
+  /* Toolbar */
+  --toolbar-height: 44px;
+  --formula-bar-height: 32px;
+  --status-bar-height: 24px;
+
+  /* Spacing */
+  --sp-xs: 2px;
+  --sp-sm: 4px;
+  --sp-md: 8px;
+  --sp-lg: 12px;
+  --sp-xl: 16px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-normal: 200ms ease;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.12);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.16);
+}
+
+/* ============================================
+   Theme: Midnight (default)
+   ============================================ */
+.theme-midnight, :root {
+  --bg-app: #0f1117;
+  --bg-toolbar: #1a1d27;
+  --bg-formula-bar: #1a1d27;
+  --bg-grid: #13151c;
+  --bg-cell: #1a1d27;
+  --bg-cell-alt: #161922;
+  --bg-header: #10121a;
+  --bg-header-hover: #1e2233;
+  --bg-selected: rgba(59, 130, 246, 0.15);
+  --bg-status: #10121a;
+
+  --border-grid: #2a2d3a;
+  --border-header: #2a2d3a;
+  --border-toolbar: #2a2d3a;
+  --border-focus: #3b82f6;
+
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-header: #94a3b8;
+  --text-toolbar: #cbd5e1;
+
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-glow: rgba(59, 130, 246, 0.3);
+
+  --selection-range: rgba(59, 130, 246, 0.1);
+  --selection-border: #3b82f6;
+
+  --btn-hover: #252836;
+  --btn-active: #2d3142;
+}
+
+/* ============================================
+   Theme: Parchment
+   ============================================ */
+.theme-parchment {
+  --bg-app: #f5f0e8;
+  --bg-toolbar: #ebe4d4;
+  --bg-formula-bar: #ebe4d4;
+  --bg-grid: #f5f0e8;
+  --bg-cell: #faf7f0;
+  --bg-cell-alt: #f2ece0;
+  --bg-header: #e2d9c5;
+  --bg-header-hover: #d9ceb6;
+  --bg-selected: rgba(139, 94, 52, 0.12);
+  --bg-status: #e2d9c5;
+
+  --border-grid: #d4c9b0;
+  --border-header: #c9bda0;
+  --border-toolbar: #d4c9b0;
+  --border-focus: #8b5e34;
+
+  --text-primary: #3d2b1f;
+  --text-secondary: #6b5344;
+  --text-muted: #8b7b6b;
+  --text-header: #6b5344;
+  --text-toolbar: #4a3728;
+
+  --accent: #8b5e34;
+  --accent-hover: #6d4a2a;
+  --accent-glow: rgba(139, 94, 52, 0.25);
+
+  --selection-range: rgba(139, 94, 52, 0.08);
+  --selection-border: #8b5e34;
+
+  --btn-hover: #ddd4c0;
+  --btn-active: #d1c6ad;
+}
+
+/* ============================================
+   Theme: Ocean
+   ============================================ */
+.theme-ocean {
+  --bg-app: #0c1b2a;
+  --bg-toolbar: #112240;
+  --bg-formula-bar: #112240;
+  --bg-grid: #0d1f35;
+  --bg-cell: #112240;
+  --bg-cell-alt: #0f1d38;
+  --bg-header: #0a1628;
+  --bg-header-hover: #16304f;
+  --bg-selected: rgba(0, 188, 212, 0.12);
+  --bg-status: #0a1628;
+
+  --border-grid: #1e3a5f;
+  --border-header: #1e3a5f;
+  --border-toolbar: #1e3a5f;
+  --border-focus: #00bcd4;
+
+  --text-primary: #e0f2f1;
+  --text-secondary: #80cbc4;
+  --text-muted: #4db6ac;
+  --text-header: #80cbc4;
+  --text-toolbar: #b2dfdb;
+
+  --accent: #00bcd4;
+  --accent-hover: #0097a7;
+  --accent-glow: rgba(0, 188, 212, 0.3);
+
+  --selection-range: rgba(0, 188, 212, 0.08);
+  --selection-border: #00bcd4;
+
+  --btn-hover: #16304f;
+  --btn-active: #1a3a5c;
+}
+
+/* ============================================
+   Theme: Forest
+   ============================================ */
+.theme-forest {
+  --bg-app: #0d1a0d;
+  --bg-toolbar: #162616;
+  --bg-formula-bar: #162616;
+  --bg-grid: #0f1e0f;
+  --bg-cell: #162616;
+  --bg-cell-alt: #132113;
+  --bg-header: #0b170b;
+  --bg-header-hover: #1e3a1e;
+  --bg-selected: rgba(76, 175, 80, 0.12);
+  --bg-status: #0b170b;
+
+  --border-grid: #2a4a2a;
+  --border-header: #2a4a2a;
+  --border-toolbar: #2a4a2a;
+  --border-focus: #66bb6a;
+
+  --text-primary: #e8f5e9;
+  --text-secondary: #a5d6a7;
+  --text-muted: #81c784;
+  --text-header: #a5d6a7;
+  --text-toolbar: #c8e6c9;
+
+  --accent: #66bb6a;
+  --accent-hover: #43a047;
+  --accent-glow: rgba(76, 175, 80, 0.3);
+
+  --selection-range: rgba(76, 175, 80, 0.08);
+  --selection-border: #66bb6a;
+
+  --btn-hover: #1e3a1e;
+  --btn-active: #254a25;
+}
+
+/* ============================================
+   Theme: Amethyst
+   ============================================ */
+.theme-amethyst {
+  --bg-app: #1a0f2e;
+  --bg-toolbar: #251749;
+  --bg-formula-bar: #251749;
+  --bg-grid: #1c1236;
+  --bg-cell: #251749;
+  --bg-cell-alt: #211440;
+  --bg-header: #150d28;
+  --bg-header-hover: #30205a;
+  --bg-selected: rgba(186, 104, 200, 0.12);
+  --bg-status: #150d28;
+
+  --border-grid: #3d2a6e;
+  --border-header: #3d2a6e;
+  --border-toolbar: #3d2a6e;
+  --border-focus: #ba68c8;
+
+  --text-primary: #f3e5f5;
+  --text-secondary: #ce93d8;
+  --text-muted: #ab47bc;
+  --text-header: #ce93d8;
+  --text-toolbar: #e1bee7;
+
+  --accent: #ba68c8;
+  --accent-hover: #9c27b0;
+  --accent-glow: rgba(186, 104, 200, 0.3);
+
+  --selection-range: rgba(186, 104, 200, 0.08);
+  --selection-border: #ba68c8;
+
+  --btn-hover: #30205a;
+  --btn-active: #3a2868;
+}
+
+/* ============================================
+   Theme: Monochrome
+   ============================================ */
+.theme-monochrome {
+  --bg-app: #fafafa;
+  --bg-toolbar: #f0f0f0;
+  --bg-formula-bar: #f0f0f0;
+  --bg-grid: #ffffff;
+  --bg-cell: #ffffff;
+  --bg-cell-alt: #f8f8f8;
+  --bg-header: #e8e8e8;
+  --bg-header-hover: #dcdcdc;
+  --bg-selected: rgba(33, 33, 33, 0.08);
+  --bg-status: #e8e8e8;
+
+  --border-grid: #d0d0d0;
+  --border-header: #c0c0c0;
+  --border-toolbar: #d0d0d0;
+  --border-focus: #333333;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --text-header: #555555;
+  --text-toolbar: #333333;
+
+  --accent: #333333;
+  --accent-hover: #111111;
+  --accent-glow: rgba(33, 33, 33, 0.2);
+
+  --selection-range: rgba(33, 33, 33, 0.05);
+  --selection-border: #333333;
+
+  --btn-hover: #e0e0e0;
+  --btn-active: #d0d0d0;
+}
