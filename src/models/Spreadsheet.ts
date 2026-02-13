@@ -10,6 +10,7 @@ export interface CellStyle {
     backgroundColor: string;
     locked: boolean;
     border: 'none' | 'thin' | 'medium' | 'thick';
+    className?: string;
 }
 
 export interface CellData {
@@ -31,6 +32,7 @@ export function defaultCellStyle(): CellStyle {
         backgroundColor: '',
         locked: false,
         border: 'none',
+        className: '',
     };
 }
 

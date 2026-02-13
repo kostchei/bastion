@@ -6,6 +6,9 @@
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-dnd-heading: 'Modesto Condensed', 'Book Antiqua', 'Palatino Linotype', serif;
+  --font-dnd-body: 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
+  --font-dnd-sans: 'Scaly Sans', 'Segoe UI', sans-serif;
 
   /* Grid dimensions */
   --cell-default-width: 100px;
@@ -115,6 +118,58 @@
 
   --btn-hover: #ddd4c0;
   --btn-active: #d1c6ad;
+
+  /* D&D Specifics */
+  --dnd-red: #8b1a1a;
+  --dnd-border: #3b2f1a;
+}
+
+/* ============================================
+   Theme: D&D 5e
+   ============================================ */
+.theme-dnd {
+  --bg-app: #f5f0e8;
+  --bg-toolbar: #ebe4d4;
+  --bg-formula-bar: #ebe4d4;
+  --bg-grid: #f5f0e8;
+  --bg-cell: #ffffff;
+  /* White cells for clean print */
+  --bg-cell-alt: #f2ece0;
+  --bg-header: #e2d9c5;
+  --bg-header-hover: #d9ceb6;
+  --bg-selected: rgba(139, 94, 52, 0.12);
+  --bg-status: #e2d9c5;
+
+  --border-grid: #d4c9b0;
+  --border-header: #c9bda0;
+  --border-toolbar: #d4c9b0;
+  --border-focus: #8b5e34;
+
+  --text-primary: #3d2b1f;
+  --text-secondary: #6b5344;
+  --text-muted: #8b7b6b;
+  --text-header: #6b5344;
+  --text-toolbar: #4a3728;
+
+  --accent: #8b1a1a;
+  /* D&D Red */
+  --accent-hover: #6d4a2a;
+  --accent-glow: rgba(139, 94, 52, 0.25);
+
+  --selection-range: rgba(139, 94, 52, 0.08);
+  --selection-border: #8b5e34;
+
+  --btn-hover: #ddd4c0;
+  --btn-active: #d1c6ad;
+
+  /* Font overrides */
+  --font-sans: var(--font-dnd-sans);
+
+
+  /* D&D Specifics */
+  --dnd-red: #8b1a1a;
+  --dnd-border: #3b2f1a;
+
 }
 
 /* ============================================

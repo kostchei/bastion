@@ -1,0 +1,200 @@
+/* ============================================
+   D&D 5e Character Sheet Theme
+   ============================================ */
+
+/* Fonts */
+.theme-dnd {
+    --border-dnd-thick: 2px solid var(--dnd-border);
+    --border-dnd-thin: 1px solid var(--dnd-border);
+    --bg-dnd-paper: #ffffff;
+}
+
+/* Base D&D Cell Styling */
+.theme-dnd .cell {
+    font-family: var(--font-dnd-sans);
+    border-color: #d4c9b0;
+    /* Light parchment border by default */
+}
+
+/* ─── Headers ─── */
+.theme-dnd .dnd-header-label,
+.theme-dnd .dnd-header-value {
+    font-family: var(--font-dnd-heading);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.theme-dnd .dnd-section-header {
+    font-family: var(--font-dnd-heading);
+    text-transform: uppercase;
+    border-bottom: var(--border-dnd-thick) !important;
+    background-color: #e0e0e0;
+    /* Fallback */
+}
+
+.theme-dnd .dnd-section-label {
+    font-family: var(--font-dnd-sans);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+/* ─── Ability Scores ─── */
+/* Look like a box */
+.theme-dnd .dnd-ability-name {
+    font-family: var(--font-dnd-heading);
+    background-color: var(--bg-dnd-paper);
+    border-top: var(--border-dnd-thick) !important;
+    border-left: var(--border-dnd-thick) !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-radius: 8px 0 0 0;
+}
+
+.theme-dnd .dnd-ability-bg {
+    background-color: var(--bg-dnd-paper);
+    border-top: var(--border-dnd-thick) !important;
+    border-right: var(--border-dnd-thick) !important;
+    border-left: none !important;
+    border-bottom: none !important;
+    border-radius: 0 8px 0 0;
+}
+
+.theme-dnd .dnd-ability-mod {
+    font-family: var(--font-dnd-heading);
+    background-color: var(--bg-dnd-paper);
+    border-left: var(--border-dnd-thick) !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    /* Open to save box */
+    font-size: 24px !important;
+}
+
+.theme-dnd .dnd-ability-score {
+    background-color: var(--bg-dnd-paper);
+    border-right: var(--border-dnd-thick) !important;
+    border-left: none !important;
+    border-bottom: none !important;
+    font-size: 14px !important;
+    vertical-align: top;
+}
+
+.theme-dnd .dnd-save-label {
+    background-color: var(--bg-dnd-paper);
+    border-left: var(--border-dnd-thick) !important;
+    border-bottom: var(--border-dnd-thick) !important;
+    border-radius: 0 0 0 8px;
+}
+
+.theme-dnd .dnd-save-value {
+    background-color: var(--bg-dnd-paper);
+    border-right: var(--border-dnd-thick) !important;
+    border-bottom: var(--border-dnd-thick) !important;
+    border-radius: 0 0 8px 0;
+}
+
+.theme-dnd .dnd-save-value.proficient {
+    font-weight: bold;
+}
+
+/* ─── Skills ─── */
+.theme-dnd .dnd-skill-name {
+    border-bottom: 1px solid #ccc !important;
+    font-size: 11px !important;
+    padding-left: 8px !important;
+}
+
+.theme-dnd .dnd-skill-bonus {
+    border-bottom: 1px solid #ccc !important;
+    font-weight: bold;
+}
+
+/* ─── Stats (AC, Init, Speed, HP) ─── */
+.theme-dnd .dnd-stat-header {
+    font-family: var(--font-dnd-sans);
+    font-size: 9px !important;
+    text-transform: uppercase;
+    border: var(--border-dnd-thick) !important;
+    border-bottom: none !important;
+    background: transparent;
+}
+
+.theme-dnd .dnd-stat-value {
+    border: var(--border-dnd-thick) !important;
+    border-top: none !important;
+    font-family: var(--font-dnd-heading);
+    font-size: 20px !important;
+    background: transparent;
+}
+
+.theme-dnd .dnd-ac-box,
+.theme-dnd .dnd-ac-value {
+    border: 3px solid var(--dnd-red) !important;
+    /* Shield shape approx */
+    background: white;
+}
+
+.theme-dnd .dnd-hp-box,
+.theme-dnd .dnd-hp-value {
+    border: var(--border-dnd-thick) !important;
+}
+
+/* ─── Print Specific Overrides ─── */
+@media print {
+
+    /* Hide grid lines for D&D theme */
+    .theme-dnd .cell {
+        border: none !important;
+        /* Default no border */
+    }
+
+    /* Re-apply specific borders */
+    .theme-dnd .dnd-ability-name,
+    .theme-dnd .dnd-ability-bg,
+    .theme-dnd .dnd-ability-mod,
+    .theme-dnd .dnd-ability-score,
+    .theme-dnd .dnd-save-label,
+    .theme-dnd .dnd-save-value,
+    .theme-dnd .dnd-stat-header,
+    .theme-dnd .dnd-stat-value,
+    .theme-dnd .dnd-ac-box,
+    .theme-dnd .dnd-ac-value,
+    .theme-dnd .dnd-hp-box,
+    .theme-dnd .dnd-hp-value,
+    .theme-dnd .dnd-box-header,
+    .theme-dnd .dnd-box-value,
+    .theme-dnd .dnd-section-header,
+    .theme-dnd .dnd-skill-name,
+    .theme-dnd .dnd-skill-bonus {
+        /* These keep their borders defined above */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Force backgrounds */
+    .theme-dnd .dnd-ability-name,
+    .theme-dnd .dnd-ability-mod,
+    .theme-dnd .dnd-ability-score,
+    .theme-dnd .dnd-save-label,
+    .theme-dnd .dnd-save-value {
+        border-style: solid !important;
+        border-color: black !important;
+    }
+
+    .theme-dnd .dnd-skill-name,
+    .theme-dnd .dnd-skill-bonus {
+        border-bottom: 1px solid #bbb !important;
+    }
+
+    /* Hide the default cell borders from print.css if they conflict */
+    .theme-dnd.grid-table {
+        border-collapse: collapse;
+    }
+
+    /* Hide row/col headers for D&D sheet in print */
+    .theme-dnd .col-header,
+    .theme-dnd .row-header,
+    .theme-dnd .grid-corner {
+        display: none !important;
+    }
+}

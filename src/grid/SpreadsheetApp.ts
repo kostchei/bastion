@@ -229,6 +229,9 @@ function applyCellStyle(td: HTMLElement, style: CellStyle): void {
         const widths: Record<string, string> = { thin: '1px', medium: '2px', thick: '3px' };
         td.style.border = `${widths[style.border] ?? '1px'} solid currentColor`;
     }
+    if (style.className) {
+        td.classList.add(...style.className.split(' '));
+    }
 }
 
 /* ============ Cell Selection ============ */
