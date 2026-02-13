@@ -238,7 +238,7 @@ export function buildCharacterSheet(): SpreadsheetState {
             skillRow++;
         }
 
-        currentRow += 3;
+        currentRow += Math.max(3, skills.length);
     }
 
     // ─── HEROIC INSPIRATION ───
@@ -362,7 +362,7 @@ export function buildCharacterSheet(): SpreadsheetState {
     cells.push({ row: 14, col: 17, value: 'CARD', bold: true, fontSize: 9, bg: C.acGold, color: '#ffffff', align: 'center', className: 'dnd-tab-label' });
 
     // ─── WHAT YOU NEED TO PLAY ───
-    const needRow = 24;
+    const needRow = Math.max(24, inspRow + 3);
     for (let c = 0; c <= 4; c++) cells.push({ row: needRow, col: c, value: c === 0 ? 'WHAT YOU NEED TO PLAY' : '', bold: true, fontSize: 10, bg: C.acRed, color: '#ffffff', border: 'medium', className: 'dnd-box-header' });
     cells.push({ row: needRow + 1, col: 0, value: 'Equipment Cards:', bold: true, fontSize: 9, bg: C.secBg, color: C.label, className: 'dnd-box-label' });
     cells.push({ row: needRow + 1, col: 1, value: 'Chain Shirt, Mace', locked: false, fontSize: 9, bg: C.secBg, color: C.editable, className: 'dnd-box-value' });
