@@ -34,18 +34,41 @@
 }
 
 #visual-sheet-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    overflow-y: auto;
-    z-index: 1000;
-    padding: 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+#visual-sheet-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 3rem;
+  cursor: pointer;
+  z-index: 1001;
+  line-height: 1;
+}
+
+#visual-sheet-close:hover {
+  color: var(--red);
+}
+
+@media print {
+  #visual-sheet-close {
+    display: none;
+  }
 }
 
 /* Ensure the sheet card is centered */
@@ -56,7 +79,8 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  margin: auto; /* Center in the overlay flex container */
+  margin: auto;
+  /* Center in the overlay flex container */
   position: relative;
 }
 

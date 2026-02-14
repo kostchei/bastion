@@ -256,8 +256,24 @@ export class VisualCharacterSheet {
                     </div>
 
                 </div><!-- /sheet-body -->
-            </div><!-- /sheet-card -->
+            <!-- /sheet-card -->
+                <button id="visual-sheet-close" title="Close Overlay">×</button>
         `;
+
+        // Wire up close events
+        const closeBtn = this.container.querySelector('#visual-sheet-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.container.style.display = 'none';
+            });
+        }
+
+        this.container.addEventListener('click', (e) => {
+            if (e.target === this.container) {
+                this.container.style.display = 'none';
+            }
+        });
+
         return this.container;
     }
 }
