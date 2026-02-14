@@ -42,7 +42,7 @@ export async function initApp(): Promise<void> {
         history.replaceState(null, '', window.location.pathname);
     } else {
         const loaded = await loadSpreadsheet('Untitled Spreadsheet');
-        spreadsheet = loaded ?? createSpreadsheet();
+        spreadsheet = loaded ?? buildCharacterSheet();
     }
 
     app = {

@@ -12,6 +12,7 @@ interface SerializedState {
     activeTheme: string;
     numCols: number;
     numRows: number;
+    isProtected?: boolean;
 }
 
 function openDB(): Promise<IDBDatabase> {
@@ -43,6 +44,7 @@ export async function saveSpreadsheet(state: SpreadsheetState): Promise<void> {
             activeTheme: state.activeTheme,
             numCols: state.numCols,
             numRows: state.numRows,
+            isProtected: state.isProtected,
         };
 
         store.put(serialized);
@@ -69,6 +71,7 @@ export async function saveSpreadsheet(state: SpreadsheetState): Promise<void> {
                 activeTheme: state.activeTheme,
                 numCols: state.numCols,
                 numRows: state.numRows,
+                isProtected: state.isProtected,
             };
             localStorage.setItem(`spreadsheet_${state.name}`, JSON.stringify(serialized));
         } catch (lsErr) {
@@ -111,6 +114,7 @@ export async function loadSpreadsheet(name: string): Promise<SpreadsheetState | 
                     activeTheme: data.activeTheme,
                     numCols: data.numCols,
                     numRows: data.numRows,
+                    isProtected: data.isProtected ?? true,
                 });
             };
             request.onerror = () => {
@@ -133,6 +137,7 @@ export async function loadSpreadsheet(name: string): Promise<SpreadsheetState | 
                 activeTheme: data.activeTheme,
                 numCols: data.numCols,
                 numRows: data.numRows,
+                isProtected: data.isProtected ?? true,
             };
         } catch {
             return null;
