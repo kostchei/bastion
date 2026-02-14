@@ -10,7 +10,11 @@ export interface CellStyle {
     backgroundColor: string;
     locked: boolean;
     border: 'none' | 'thin' | 'medium' | 'thick';
+    borderColor?: string;
     className?: string;
+    rowSpan?: number;
+    colSpan?: number;
+    verticalAlign?: 'top' | 'middle' | 'bottom';
 }
 
 export interface CellData {
@@ -20,6 +24,7 @@ export interface CellData {
     style: CellStyle;
     error?: string;
     options?: string[]; // Dropdown options
+    tooltip?: string;   // Hover tooltip text
 }
 
 export function defaultCellStyle(): CellStyle {
@@ -34,6 +39,8 @@ export function defaultCellStyle(): CellStyle {
         locked: false,
         border: 'none',
         className: '',
+        rowSpan: 1,
+        colSpan: 1,
     };
 }
 

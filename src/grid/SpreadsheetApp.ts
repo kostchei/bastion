@@ -25,6 +25,7 @@ interface AppState {
 }
 
 let app: AppState;
+let previouslyLockedCells: Set<string> = new Set();
 
 /* ============ DOM References ============ */
 
@@ -78,6 +79,10 @@ export async function initApp(): Promise<void> {
 
     updateStatusBar('Ready');
     updateProtectionUI();
+
+    // Wire stats panel close
+    $<HTMLButtonElement>('stats-panel-close').addEventListener('click', closeStatsPanel);
+    $<HTMLDivElement>('stats-panel-backdrop').addEventListener('click', closeStatsPanel);
 }
 
 /* ============ Theme ============ */
@@ -139,6 +144,8 @@ function renderGrid(): void {
 
     // Data rows
     const tbody = document.createElement('tbody');
+    const spannedCells = new Set<string>(); // Keep track of cells covered by spans
+
     for (let r = 0; r < numRows; r++) {
         const tr = document.createElement('tr');
         tr.style.height = `${rowHeights[r]}px`;
@@ -165,13 +172,39 @@ function renderGrid(): void {
 
         // Cells
         for (let c = 0; c < numCols; c++) {
+            // content...
+            const key = cellKey(r, c);
+
+            // Skip if this cell is covered by a span from a previous cell
+            if (spannedCells.has(key)) continue;
+
             const td = document.createElement('td');
             td.className = 'cell';
             td.dataset.row = String(r);
             td.dataset.col = String(c);
 
-            const key = cellKey(r, c);
             const cell = app.spreadsheet.cells.get(key);
+
+            // Handle Spans
+            if (cell && (cell.style.rowSpan || cell.style.colSpan)) {
+                const rs = cell.style.rowSpan ?? 1;
+                const cs = cell.style.colSpan ?? 1;
+
+                if (rs > 1) td.rowSpan = rs;
+                if (cs > 1) td.colSpan = cs;
+
+                // Mark covered cells
+                if (rs > 1 || cs > 1) {
+                    for (let i = 0; i < rs; i++) {
+                        for (let j = 0; j < cs; j++) {
+                            if (i === 0 && j === 0) continue; // Don't mark itself
+                            // Mark the covered cell
+                            spannedCells.add(cellKey(r + i, c + j));
+                        }
+                    }
+                }
+            }
+
             if (cell && cell.type !== 'empty') {
                 td.textContent = cell.computed || cell.raw;
                 applyCellStyle(td, cell.style);
@@ -186,6 +219,11 @@ function renderGrid(): void {
             // Locked indicator
             if (cell?.style.locked) {
                 td.classList.add('locked');
+            }
+            // Tooltip
+            if (cell?.tooltip) {
+                td.dataset.tooltip = cell.tooltip;
+                td.classList.add('has-tooltip');
             }
 
             // Click to select
@@ -203,6 +241,15 @@ function renderGrid(): void {
             td.addEventListener('dblclick', () => {
                 startEditing();
             });
+
+            // Stats panel trigger
+            if (cell?.style.className?.includes('dnd-stats-trigger')) {
+                td.style.cursor = 'pointer';
+                td.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showStatsPanel();
+                });
+            }
 
             tr.appendChild(td);
         }
@@ -228,10 +275,13 @@ function applyCellStyle(td: HTMLElement, style: CellStyle): void {
     if (style.backgroundColor) td.style.backgroundColor = style.backgroundColor;
     if (style.border && style.border !== 'none') {
         const widths: Record<string, string> = { thin: '1px', medium: '2px', thick: '3px' };
-        td.style.border = `${widths[style.border] ?? '1px'} solid currentColor`;
+        td.style.border = `${widths[style.border] ?? '1px'} solid ${style.borderColor || 'currentColor'}`;
     }
     if (style.className) {
         td.classList.add(...style.className.split(' '));
+    }
+    if (style.verticalAlign) {
+        td.style.verticalAlign = style.verticalAlign;
     }
 }
 
@@ -514,7 +564,8 @@ function updateCellDisplay(row: number, col: number): void {
 
     // Remove existing children
     td.textContent = '';
-    td.classList.remove('has-formula', 'has-error', 'editing', 'locked');
+    td.classList.remove('has-formula', 'has-error', 'editing', 'locked', 'has-tooltip');
+    td.removeAttribute('data-tooltip');
     td.style.cssText = '';
 
     if (cell && cell.type !== 'empty') {
@@ -531,6 +582,11 @@ function updateCellDisplay(row: number, col: number): void {
     // Locked indicator
     if (cell?.style.locked) {
         td.classList.add('locked');
+    }
+    // Tooltip
+    if (cell?.tooltip) {
+        td.dataset.tooltip = cell.tooltip;
+        td.classList.add('has-tooltip');
     }
 }
 
@@ -1009,7 +1065,31 @@ function toggleBorder(): void {
 }
 
 function toggleProtection(): void {
+    const goingUnprotected = app.spreadsheet.isProtected;
     app.spreadsheet.isProtected = !app.spreadsheet.isProtected;
+
+    if (goingUnprotected) {
+        // Switching OFF protection: unlock all cells, remember which were locked
+        previouslyLockedCells.clear();
+        for (const [key, cell] of app.spreadsheet.cells) {
+            if (cell.style.locked) {
+                previouslyLockedCells.add(key);
+                cell.style.locked = false;
+            }
+        }
+    } else {
+        // Switching ON protection: re-lock previously locked cells
+        for (const key of previouslyLockedCells) {
+            const cell = app.spreadsheet.cells.get(key);
+            if (cell) {
+                cell.style.locked = true;
+            }
+        }
+        previouslyLockedCells.clear();
+    }
+
+    renderGrid();
+    selectCell(app.selectedCell.row, app.selectedCell.col);
     updateProtectionUI();
     app.autoSave(app.spreadsheet);
 }
@@ -1029,6 +1109,115 @@ function updateProtectionUI(): void {
         btn.title = 'Sheet is Unprotected (Click to Protect)';
         updateStatusBar('Sheet Protection Disabled 🔓');
     }
+}
+
+/* ============ Stats Summary Panel ============ */
+
+function showStatsPanel(): void {
+    const abilities = [
+        { name: 'Strength', abbr: 'STR', scoreRow: 5, modRow: 5, saveRow: 6 },
+        { name: 'Dexterity', abbr: 'DEX', scoreRow: 8, modRow: 8, saveRow: 9 },
+        { name: 'Constitution', abbr: 'CON', scoreRow: 11, modRow: 11, saveRow: 12 },
+        { name: 'Intelligence', abbr: 'INT', scoreRow: 14, modRow: 14, saveRow: 15 },
+        { name: 'Wisdom', abbr: 'WIS', scoreRow: 17, modRow: 17, saveRow: 18 },
+        { name: 'Charisma', abbr: 'CHA', scoreRow: 20, modRow: 20, saveRow: 21 },
+    ];
+
+    const saveProficiencies: Record<string, boolean> = {
+        'STR': false, 'DEX': false, 'CON': false,
+        'INT': false, 'WIS': true, 'CHA': true,
+    };
+
+    const skillMap: { ability: string; name: string; proficient: boolean }[] = [
+        { ability: 'STR', name: 'Athletics', proficient: true },
+        { ability: 'DEX', name: 'Acrobatics', proficient: false },
+        { ability: 'DEX', name: 'Sleight of Hand', proficient: false },
+        { ability: 'DEX', name: 'Stealth', proficient: false },
+        { ability: 'INT', name: 'Arcana', proficient: false },
+        { ability: 'INT', name: 'History', proficient: true },
+        { ability: 'INT', name: 'Investigation', proficient: false },
+        { ability: 'INT', name: 'Nature', proficient: false },
+        { ability: 'INT', name: 'Religion', proficient: true },
+        { ability: 'WIS', name: 'Animal Handling', proficient: false },
+        { ability: 'WIS', name: 'Insight', proficient: true },
+        { ability: 'WIS', name: 'Medicine', proficient: false },
+        { ability: 'WIS', name: 'Perception', proficient: true },
+        { ability: 'WIS', name: 'Survival', proficient: false },
+        { ability: 'CHA', name: 'Deception', proficient: false },
+        { ability: 'CHA', name: 'Intimidation', proficient: false },
+        { ability: 'CHA', name: 'Performance', proficient: false },
+        { ability: 'CHA', name: 'Persuasion', proficient: false },
+    ];
+
+    // Read live data from spreadsheet cells
+    const getCellValue = (row: number, col: number): string => {
+        const key = cellKey(row, col);
+        const cell = app.spreadsheet.cells.get(key);
+        return cell?.computed || cell?.raw || '';
+    };
+
+    const profBonus = getCellValue(4, 5); // F5
+
+    // Build ability cards
+    const statsGrid = $<HTMLDivElement>('stats-grid');
+    statsGrid.innerHTML = '';
+
+    const modValues: Record<string, number> = {};
+
+    for (const ab of abilities) {
+        const score = getCellValue(ab.scoreRow, 1); // col B
+        const mod = getCellValue(ab.modRow, 0);     // col A
+        const save = getCellValue(ab.saveRow, 1);   // col B
+        const isProfSave = saveProficiencies[ab.abbr];
+
+        const modNum = parseInt(mod) || 0;
+        modValues[ab.abbr] = modNum;
+        const modSign = modNum >= 0 ? `+${modNum}` : `${modNum}`;
+        const saveNum = parseInt(save) || 0;
+        const saveSign = saveNum >= 0 ? `+${saveNum}` : `${saveNum}`;
+
+        const card = document.createElement('div');
+        card.className = 'stat-card';
+        card.innerHTML = `
+            <div class="stat-name">${ab.name}</div>
+            <div class="stat-mod">${modSign}</div>
+            <div class="stat-score">Score: ${score}</div>
+            <div class="stat-save ${isProfSave ? 'proficient' : ''}">
+                ${ab.abbr} Save: ${saveSign}${isProfSave ? ' ●' : ''}
+            </div>
+        `;
+        statsGrid.appendChild(card);
+    }
+
+    // Build skills list
+    const statsSkills = $<HTMLDivElement>('stats-skills');
+    statsSkills.innerHTML = `
+        <div class="stats-skills-header">Skills (Prof Bonus: +${profBonus})</div>
+    `;
+
+    for (const skill of skillMap) {
+        const modNum = modValues[skill.ability] || 0;
+        const profNum = parseInt(profBonus) || 2;
+        const bonus = skill.proficient ? modNum + profNum : modNum;
+        const bonusSign = bonus >= 0 ? `+${bonus}` : `${bonus}`;
+
+        const row = document.createElement('div');
+        row.className = `skill-row ${skill.proficient ? 'proficient' : ''}`;
+        row.innerHTML = `
+            <span class="skill-name">${skill.name} <span style="color:#999;font-size:9px">(${skill.ability})</span></span>
+            <span class="skill-bonus">${bonusSign}</span>
+        `;
+        statsSkills.appendChild(row);
+    }
+
+    // Show panel
+    $<HTMLDivElement>('stats-panel').classList.add('visible');
+    $<HTMLDivElement>('stats-panel-backdrop').classList.add('visible');
+}
+
+function closeStatsPanel(): void {
+    $<HTMLDivElement>('stats-panel').classList.remove('visible');
+    $<HTMLDivElement>('stats-panel-backdrop').classList.remove('visible');
 }
 
 function getSelectedCells(): string[] {

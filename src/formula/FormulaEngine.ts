@@ -467,6 +467,18 @@ function evaluateFunction(
             const factor = Math.pow(10, places);
             return Math.round(val * factor) / factor;
         }
+        case 'FLOOR': {
+            if (args.length < 1) throw new Error('#VALUE!');
+            const val = evaluate(args[0], state, visited);
+            if (typeof val !== 'number') throw new Error('#VALUE!');
+            return Math.floor(val);
+        }
+        case 'CEILING': {
+            if (args.length < 1) throw new Error('#VALUE!');
+            const val = evaluate(args[0], state, visited);
+            if (typeof val !== 'number') throw new Error('#VALUE!');
+            return Math.ceil(val);
+        }
         case 'IF': {
             if (args.length < 2) throw new Error('#VALUE!');
             const condition = evaluate(args[0], state, visited);
