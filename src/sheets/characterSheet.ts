@@ -1,7 +1,6 @@
 import {
     SpreadsheetState,
     createSpreadsheet,
-    CellData,
     createEmptyCell,
     defaultCellStyle,
     cellKey
@@ -72,7 +71,7 @@ export function buildCharacterSheet(): SpreadsheetState {
     const abilityNames = ['STRENGTH', 'DEXTERITY', 'CONSTITUTION', 'INTELLIGENCE', 'WISDOM', 'CHARISMA'];
     let currentRow = 4;
 
-    abilities.forEach((abil, idx) => {
+    abilities.forEach((_abil, idx) => {
         const baseRow = currentRow;
 
         // Ability Label
@@ -86,7 +85,7 @@ export function buildCharacterSheet(): SpreadsheetState {
         // Score is stored in the cell below the modifier visually, or we use a helper cell
 
         // Visual: Big Circle with Modifier
-        const modCell = mergeCells(baseRow + 1, 0, 2, 1, `=FLOOR((C${baseRow + 4}-10)/2)`, {
+        mergeCells(baseRow + 1, 0, 2, 1, `=FLOOR((C${baseRow + 4}-10)/2)`, {
             className: 'dnd-ability-mod',
             fontSize: 24,
             fontWeight: 'bold',
