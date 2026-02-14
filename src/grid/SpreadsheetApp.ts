@@ -12,6 +12,7 @@ import { processCell, DependencyGraph } from '../formula/FormulaEngine';
 import { createAutoSave, loadSpreadsheet, saveSpreadsheet, listSpreadsheets, deleteSpreadsheet } from '../storage/StorageManager';
 import { buildCharacterSheet } from '../sheets/characterSheet';
 import { hashToState, getShareableURL } from '../sharing/urlSharing';
+import '../styles/visual-sheet.css'; // Import visual styles
 
 /* ============ App State ============ */
 
@@ -83,6 +84,27 @@ export async function initApp(): Promise<void> {
     // Wire stats panel close
     $<HTMLButtonElement>('stats-panel-close').addEventListener('click', closeStatsPanel);
     $<HTMLDivElement>('stats-panel-backdrop').addEventListener('click', closeStatsPanel);
+
+    // Initial render of visual sheet if it exists
+    toggleVisualSheet(true); // Default to visual view for now as we build it
+}
+
+let visualSheetHelper: import('../sheets/VisualCharacterSheet').VisualCharacterSheet | null = null;
+
+function toggleVisualSheet(show: boolean): void {
+    const existing = document.getElementById('visual-sheet-overlay');
+    if (existing) {
+        existing.style.display = show ? 'flex' : 'none';
+        if (show && visualSheetHelper) {
+            visualSheetHelper.render(app.spreadsheet);
+        }
+    } else if (show) {
+        import('../sheets/VisualCharacterSheet').then(({ VisualCharacterSheet }) => {
+            visualSheetHelper = new VisualCharacterSheet(app.spreadsheet);
+            const overlay = visualSheetHelper.render();
+            document.getElementById('app')?.appendChild(overlay);
+        });
+    }
 }
 
 /* ============ Theme ============ */
@@ -525,6 +547,11 @@ function commitEdit(): void {
 
     td.classList.remove('editing');
     app.autoSave(app.spreadsheet);
+
+    // Update visual sheet if active
+    if (visualSheetHelper) {
+        visualSheetHelper.render(app.spreadsheet);
+    }
 }
 
 function updateDependentDisplays(changedKey: string): void {
@@ -795,28 +822,10 @@ function wireToolbar(): void {
         openFileManager();
     });
 
-    // New Character Sheet
+    // New Character Sheet (Visual Toggle)
     $<HTMLButtonElement>('btn-char-sheet').addEventListener('click', () => {
-        if (confirm('Create a new D&D Character Sheet? Current work will be saved first.')) {
-            saveSpreadsheet(app.spreadsheet).then(() => {
-                app.spreadsheet = buildCharacterSheet();
-                app.depGraph = new DependencyGraph();
-
-                // Process formulas to build dependency graph and compute values
-                for (const [key, cell] of app.spreadsheet.cells) {
-                    if (cell.type === 'formula') {
-                        processCell(key, cell.raw, app.spreadsheet, app.depGraph);
-                    }
-                }
-
-                $<HTMLInputElement>('sheet-name').value = app.spreadsheet.name;
-                applyTheme(app.spreadsheet.activeTheme);
-                renderGrid();
-                selectCell(0, 0);
-                app.autoSave(app.spreadsheet);
-                updateStatusBar('D&D Character Sheet created ⚔️');
-            });
-        }
+        const isVisual = document.getElementById('visual-sheet-overlay')?.style.display !== 'none';
+        toggleVisualSheet(!isVisual);
     });
 
     // Share as URL
@@ -1158,16 +1167,16 @@ function showStatsPanel(): void {
 
     const profBonus = getCellValue(4, 5); // F5
 
-    // Build ability cards
-    const statsGrid = $<HTMLDivElement>('stats-grid');
+    // Build ability list (Sidebar)
+    const statsGrid = $<HTMLDivElement>('stats-grid'); // Now acts as sidebar list
     statsGrid.innerHTML = '';
 
     const modValues: Record<string, number> = {};
 
     for (const ab of abilities) {
-        const score = getCellValue(ab.scoreRow, 1); // col B
-        const mod = getCellValue(ab.modRow, 0);     // col A
-        const save = getCellValue(ab.saveRow, 1);   // col B
+        const score = getCellValue(ab.scoreRow, 1);
+        const mod = getCellValue(ab.modRow, 0);
+        const save = getCellValue(ab.saveRow, 1);
         const isProfSave = saveProficiencies[ab.abbr];
 
         const modNum = parseInt(mod) || 0;
@@ -1176,39 +1185,117 @@ function showStatsPanel(): void {
         const saveNum = parseInt(save) || 0;
         const saveSign = saveNum >= 0 ? `+${saveNum}` : `${saveNum}`;
 
-        const card = document.createElement('div');
-        card.className = 'stat-card';
-        card.innerHTML = `
-            <div class="stat-name">${ab.name}</div>
-            <div class="stat-mod">${modSign}</div>
-            <div class="stat-score">Score: ${score}</div>
-            <div class="stat-save ${isProfSave ? 'proficient' : ''}">
-                ${ab.abbr} Save: ${saveSign}${isProfSave ? ' ●' : ''}
+        // Create Group
+        const group = document.createElement('div');
+        group.className = 'ability-group';
+
+        // Header: Name + Mod Circle
+        const header = document.createElement('div');
+        header.className = 'ability-header';
+        header.innerHTML = `
+            <div>
+                <div class="ability-name">${ab.name}</div>
+                <div class="ability-score-tiny">Score: ${score}</div>
             </div>
+            <div class="ability-mod-circle">${modSign}</div>
         `;
-        statsGrid.appendChild(card);
+        group.appendChild(header);
+
+        // Saving Throw
+        const saveRow = document.createElement('div');
+        saveRow.className = 'b-save-row';
+        saveRow.innerHTML = `
+            ${ab.abbr} Save: ${saveSign} ${isProfSave ? '●' : '○'}
+        `;
+        group.appendChild(saveRow);
+
+        // Skills for this ability
+        const abilitySkills = skillMap.filter(s => s.ability === ab.abbr);
+        if (abilitySkills.length > 0) {
+            const skillContainer = document.createElement('div');
+            skillContainer.className = 'ability-skills';
+
+            for (const skill of abilitySkills) {
+                const profNum = parseInt(profBonus) || 2;
+                const bonus = skill.proficient ? modNum + profNum : modNum;
+                const bonusSign = bonus >= 0 ? `+${bonus}` : `${bonus}`;
+
+                const row = document.createElement('div');
+                row.className = 'b-skill-row';
+                row.innerHTML = `
+                    <span>${skill.proficient ? '●' : '○'} ${skill.name}</span>
+                    <span class="b-skill-val">${bonusSign}</span>
+                `;
+                skillContainer.appendChild(row);
+            }
+            group.appendChild(skillContainer);
+        }
+
+        statsGrid.appendChild(group);
     }
 
-    // Build skills list
-    const statsSkills = $<HTMLDivElement>('stats-skills');
-    statsSkills.innerHTML = `
-        <div class="stats-skills-header">Skills (Prof Bonus: +${profBonus})</div>
+    // --- Main Board Content ---
+
+    // 1. Combat Stats (Init, Speed, HP)
+    const combatRow = $<HTMLDivElement>('board-combat-stats');
+    const initVal = getCellValue(5, 4); // E6
+    const speedVal = getCellValue(5, 6); // G6
+    const hpVal = getCellValue(8, 4);    // HP Max (approx)
+
+    combatRow.innerHTML = `
+        <div class="combat-stat-card">
+            <div class="combat-stat-label">Initiative</div>
+            <div class="combat-stat-value">${initVal || '+0'}</div>
+        </div>
+        <div class="combat-stat-card">
+            <div class="combat-stat-label">Speed</div>
+            <div class="combat-stat-value">${speedVal || '30'}</div>
+        </div>
+        <div class="combat-stat-card" style="width: 200px;">
+            <div class="combat-stat-label">Hit Point Max</div>
+            <div class="combat-stat-value">${hpVal || '12'}</div>
+        </div>
     `;
 
-    for (const skill of skillMap) {
-        const modNum = modValues[skill.ability] || 0;
-        const profNum = parseInt(profBonus) || 2;
-        const bonus = skill.proficient ? modNum + profNum : modNum;
-        const bonusSign = bonus >= 0 ? `+${bonus}` : `${bonus}`;
+    // 2. Action / Attack Slots (Row 1)
+    const actionRow = $<HTMLDivElement>('board-actions');
+    actionRow.innerHTML = `
+        <div class="card-slot">
+            <div class="card-slot-footer">Equipment</div>
+            <div class="card-content">
+                <div class="slot-empty-text">
+                    You can use Simple Weapons and Martial Weapons by placing an Equipment Card for a weapon of either type here.
+                </div>
+            </div>
+        </div>
+        <div class="card-slot">
+            <div class="card-slot-footer">Equipment</div>
+            <div class="card-content">
+                <div class="slot-empty-text">
+                    If you aren't wielding a weapon with the Two-Handed property, you can also wield a weapon with the Light property here.
+                </div>
+            </div>
+        </div>
+    `;
 
-        const row = document.createElement('div');
-        row.className = `skill-row ${skill.proficient ? 'proficient' : ''}`;
-        row.innerHTML = `
-            <span class="skill-name">${skill.name} <span style="color:#999;font-size:9px">(${skill.ability})</span></span>
-            <span class="skill-bonus">${bonusSign}</span>
-        `;
-        statsSkills.appendChild(row);
-    }
+    // 3. Equipment Slots (Row 2) - Reuse or add more
+    const equipRow = $<HTMLDivElement>('board-equipment');
+    equipRow.innerHTML = `
+         <div class="card-slot" style="border-color: #c6a858;">
+            <div class="card-slot-footer" style="background: #c6a858;">Class Features</div>
+            <div class="card-content" style="padding: 5px; font-size: 11px;">
+               ${getCellValue(10, 9).replace(/\n/g, '<br>')}
+            </div>
+        </div>
+        <div class="card-slot">
+            <div class="card-slot-header" style="margin-bottom: 5px;">Backpack</div>
+            <div class="card-content">
+                <div class="slot-empty-text">
+                     Place Item Cards here to carry them in your backpack.
+                </div>
+            </div>
+        </div>
+    `;
 
     // Show panel
     $<HTMLDivElement>('stats-panel').classList.add('visible');
