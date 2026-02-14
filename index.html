@@ -140,6 +140,9 @@
             <path d="M4 5V1h8v4M4 11H2V7h12v4h-2M4 11v4h8v-4H4z" stroke="currentColor" stroke-width="1.2" />
           </svg>
         </button>
+        <button class="toolbar-btn" id="btn-visual-sheet" title="View Character Sheet">
+          📜
+        </button>
       </div>
     </header>
 
@@ -192,12 +195,30 @@
     <div id="stats-panel-backdrop"></div>
     <div id="stats-panel">
       <button class="stats-close" id="stats-panel-close">✕</button>
-      <div class="stats-header">Character Statistics</div>
-      <div class="stats-grid" id="stats-grid">
-        <!-- JS populates this -->
-      </div>
-      <div class="stats-skills" id="stats-skills">
-        <!-- JS populates this -->
+      <div class="board-layout">
+        <!-- Left Sidebar: Abilities & Skills -->
+        <div class="board-sidebar" id="board-sidebar">
+          <div class="board-header-abilities">ABILITY MODIFIERS & SKILLS</div>
+          <div id="stats-grid" class="board-abilities-list"></div>
+        </div>
+
+        <!-- Main Content: Combat Stats & Cards -->
+        <div class="board-main">
+          <!-- Top Row: Initiative, Speed, HP -->
+          <div class="board-combat-row" id="board-combat-stats">
+            <!-- JS populates -->
+          </div>
+
+          <!-- Middle Row: Attacks / Actions -->
+          <div class="board-card-row" id="board-actions">
+            <!-- JS populates -->
+          </div>
+
+          <!-- Bottom Row: Equipment -->
+          <div class="board-card-row" id="board-equipment">
+            <!-- JS populates -->
+          </div>
+        </div>
       </div>
     </div>
 

@@ -793,6 +793,11 @@ function wireToolbar(): void {
         window.print();
     });
 
+    // Toggle Visual Sheet
+    $<HTMLButtonElement>('btn-visual-sheet').addEventListener('click', () => {
+        toggleVisualSheet(true);
+    });
+
     // New spreadsheet
     $<HTMLButtonElement>('btn-new').addEventListener('click', () => {
         if (confirm('Create a new spreadsheet? Current work will be saved first.')) {
