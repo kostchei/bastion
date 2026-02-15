@@ -6,6 +6,7 @@ Static HTML/JS pages for browsing TaleKeeper characters and rendering a printabl
 
 - `list.html` + `list.js`: Character list UI (loads from `https://api.talekeeper.org/api/collections/users_stats/records`).
 - `index.html` + `index.js`: Printable sheet renderer (loads `?characterId=<id>`).
+- `piety.html` + `piety.js`: Edit God + Piety for a character (patches `piety_deity`, `piety_score`).
 - `styles.css`: Sheet styling.
 
 ## Recent Updates (Sidebar / Right Column)
@@ -29,4 +30,3 @@ Also removed the "Gaining a Level" placeholder from that section.
 
 `d:\\Code\\Bastions` is already a git repo with a configured GitHub remote and appears to be the canonical home for this work.
 If you want a single source of truth, migrate ongoing edits there and treat this folder as a staging copy.
-

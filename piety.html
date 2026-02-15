@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Piety</title>
+    <script src="piety.js" defer></script>
+    <style>
+        :root {
+            --bg: #efe6d4;
+            --card: #fff9ee;
+            --ink: #2f1f15;
+            --line: #7a5f49;
+            --accent: #4f7c2a;
+            --danger: #8f1c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            background: radial-gradient(circle at top left, #f8f0df, var(--bg));
+            color: var(--ink);
+            padding: 1rem;
+        }
+
+        .layout {
+            max-width: 1050px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .panel {
+            border: 2px solid var(--line);
+            background: var(--card);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        h1 {
+            margin: 0 0 0.35rem 0;
+            font-size: 1.9rem;
+        }
+
+        .muted {
+            color: #5e4d3b;
+            font-size: 0.92rem;
+        }
+
+        .status {
+            border-left: 4px solid var(--line);
+            background: #f7f3eb;
+            padding: 0.6rem 0.7rem;
+            font-weight: 700;
+        }
+
+        .status.ok {
+            border-left-color: var(--accent);
+        }
+
+        .status.error {
+            border-left-color: var(--danger);
+        }
+
+        .link-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: inline-block;
+            border: 1px solid #3f3327;
+            background: #fff8d9;
+            padding: 0.25rem 0.45rem;
+            border-radius: 4px;
+            color: #111;
+            text-decoration: none;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        input,
+        button {
+            font: inherit;
+            padding: 0.5rem 0.55rem;
+            border: 1px solid #6d5842;
+            border-radius: 6px;
+            background: #fff;
+            color: #20140d;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        label {
+            font-weight: 700;
+        }
+
+        .row {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 960px) {
+            .row {
+                grid-template-columns: 1fr 1fr;
+                align-items: end;
+            }
+        }
+
+        .field {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .danger-btn {
+            border-color: #6b2a2a;
+            background: #ffe7e7;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="layout">
+        <section class="panel">
+            <h1>Edit Piety</h1>
+            <div class="link-row">
+                <a class="nav-link" href="list.html">Back To Character List</a>
+                <a id="sheet-link" class="nav-link" href="index.html" hidden>Open Sheet</a>
+                <a id="proficiencies-link" class="nav-link" href="proficiencies.html" hidden>Proficiencies</a>
+            </div>
+            <p class="muted">Edits <code>users_stats.piety_deity</code> and <code>users_stats.piety_score</code> in PocketBase. Requires a valid auth token.</p>
+            <div id="status" class="status">Ready.</div>
+        </section>
+
+        <section class="panel">
+            <div class="row">
+                <div class="field">
+                    <label for="character-id">Character Record ID</label>
+                    <input id="character-id" placeholder="pocketbase record id (users_stats)" autocomplete="off" />
+                </div>
+
+                <div class="button-row">
+                    <button id="btn-load" type="button">Load</button>
+                    <button id="btn-save" type="button">Save</button>
+                    <button id="btn-revert" class="danger-btn" type="button" title="Discard local changes and reload">
+                        Revert
+                    </button>
+                </div>
+            </div>
+            <p class="muted">Tip: open from the list via the "Piety" action to auto-fill the id.</p>
+        </section>
+
+        <section class="panel">
+            <div class="row">
+                <div class="field">
+                    <label for="deity-name">God</label>
+                    <input id="deity-name" list="deity-options" placeholder="Start typing..." autocomplete="off" />
+                    <datalist id="deity-options"></datalist>
+                    <div class="muted">Allowed values come from <code>docs/gods.md</code>.</div>
+                </div>
+                <div class="field">
+                    <label for="piety-score">Piety Score</label>
+                    <input id="piety-score" type="number" inputmode="numeric" placeholder="0" />
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
+

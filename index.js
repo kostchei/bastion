@@ -533,6 +533,12 @@ async function initSheetLoader() {
     profLink.href = `proficiencies.html?characterId=${encodeURIComponent(characterId)}`;
   }
 
+  const pietyLink = document.getElementById("piety-link");
+  if (pietyLink) {
+    pietyLink.hidden = false;
+    pietyLink.href = `piety.html?characterId=${encodeURIComponent(characterId)}`;
+  }
+
   setStatus(`Loading character ${characterId}...`, "loading");
 
   const token = readAuthToken();

@@ -260,6 +260,14 @@ function renderCharacterRows(items) {
     profLink.href = profUrl;
     profLink.textContent = "Proficiencies";
     openCell.appendChild(profLink);
+
+    openCell.appendChild(document.createTextNode(" "));
+
+    const pietyLink = document.createElement("a");
+    pietyLink.className = "open-link";
+    pietyLink.href = `piety.html?characterId=${encodeURIComponent(item.id)}`;
+    pietyLink.textContent = "Piety";
+    openCell.appendChild(pietyLink);
     row.appendChild(openCell);
 
     tbody.appendChild(row);
