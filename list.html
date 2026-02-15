@@ -175,15 +175,15 @@
                 <p class="muted">Use a token from your TaleKeeper session if records are not public.</p>
             </div>
 
-            <form id="superuser-login" class="field-row">
-                <label for="superuser-identity">Optional Superuser Login</label>
-                <input id="superuser-identity" name="identity" placeholder="email" autocomplete="username">
-                <input id="superuser-password" name="password" type="password" placeholder="password"
+            <form id="user-login" class="field-row">
+                <label for="user-identity">Optional User Login</label>
+                <input id="user-identity" name="identity" placeholder="email" autocomplete="username">
+                <input id="user-password" name="password" type="password" placeholder="password"
                     autocomplete="current-password">
                 <div class="button-row">
-                    <button type="submit">Auth _superusers</button>
+                    <button type="submit">Login User</button>
                 </div>
-                <p class="muted">If successful, the returned token is stored and used for list/sheet loading.</p>
+                <p class="muted">If successful, the returned user token is stored and used for list/sheet loading.</p>
             </form>
         </section>
 

@@ -206,21 +206,21 @@ async function refreshCharacters() {
   }
 }
 
-async function handleSuperuserLogin(event) {
+async function handleUserLogin(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const identity = form.identity.value.trim();
   const password = form.password.value;
 
   if (!identity || !password) {
-    setStatus("Enter superuser identity and password.", "error");
+    setStatus("Enter user identity and password.", "error");
     return;
   }
 
-  setStatus("Authenticating _superusers...", "");
+  setStatus("Authenticating user...", "");
 
   try {
-    const response = await fetch(`${API_BASE}/api/collections/_superusers/auth-with-password`, {
+    const response = await fetch(`${API_BASE}/api/collections/users/auth-with-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ identity, password }),
@@ -228,7 +228,16 @@ async function handleSuperuserLogin(event) {
 
     const payload = await response.json();
     if (!response.ok) {
-      throw new Error(payload?.message || `Auth failed (${response.status})`);
+      const msg = String(payload?.message || "");
+      if (
+        response.status === 403 &&
+        msg.toLowerCase().includes("not configured to allow password authentication")
+      ) {
+        throw new Error(
+          "User password auth is disabled on this server. Login on talekeeper.org and paste the pocketbase_auth JSON token."
+        );
+      }
+      throw new Error(msg || `Auth failed (${response.status})`);
     }
 
     const token = String(payload?.token || "");
@@ -238,10 +247,10 @@ async function handleSuperuserLogin(event) {
     document.getElementById("token-input").value = token;
     form.password.value = "";
 
-    setStatus("Superuser auth succeeded. Refreshing character list...", "ok");
+    setStatus("User auth succeeded. Refreshing character list...", "ok");
     await refreshCharacters();
   } catch (error) {
-    setStatus(`Superuser auth failed: ${error.message}`, "error");
+    setStatus(`User auth failed: ${error.message}`, "error");
   }
 }
 
@@ -277,7 +286,7 @@ function init() {
   document.getElementById("save-token").addEventListener("click", handleSaveToken);
   document.getElementById("clear-token").addEventListener("click", handleClearToken);
   document.getElementById("refresh-list").addEventListener("click", refreshCharacters);
-  document.getElementById("superuser-login").addEventListener("submit", handleSuperuserLogin);
+  document.getElementById("user-login").addEventListener("submit", handleUserLogin);
 
   refreshCharacters();
 }
