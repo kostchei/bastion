@@ -41,6 +41,14 @@
             display: none !important;
         }
 
+        body.print-mode #list-link,
+        body.print-mode #proficiencies-link,
+        body.print-mode #piety-link,
+        body.print-mode #factions-link,
+        body.print-mode #print-toggle {
+            display: none !important;
+        }
+
         #list-link {
             position: fixed;
             top: 1rem;
@@ -101,6 +109,14 @@
             #sheet-status {
                 display: none !important;
             }
+
+            #list-link,
+            #proficiencies-link,
+            #piety-link,
+            #factions-link,
+            #print-toggle {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -117,6 +133,7 @@
         <div class="sheet-header">
             <div class="level-badge">Level 1</div>
             <div class="class-name">Barbarian</div>
+            <div id="character-name" class="character-name">Unnamed Hero</div>
         </div>
 
         <div class="sheet-body">

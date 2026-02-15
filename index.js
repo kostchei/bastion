@@ -479,6 +479,7 @@ function renderSavesAndSkills(saves, skills) {
 function renderSheet(view) {
   setText(".level-badge", `Level ${view.level}`);
   setText(".class-name", view.className);
+  renderTextOrDash("#character-name", view.characterName);
 
   renderAbilityMods(view.mods);
   renderSavesAndSkills(view.saves, view.skills);
