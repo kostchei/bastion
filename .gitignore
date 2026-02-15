@@ -25,3 +25,10 @@ Desktop.ini
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Local/staging artifacts (not for deploy)
+.local/
+
+# Large source scans (keep PNGs if needed)
+Equipment_Cards/*.tif
+Equipment_Cards/*.tiff
