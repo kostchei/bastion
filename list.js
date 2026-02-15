@@ -268,6 +268,14 @@ function renderCharacterRows(items) {
     pietyLink.href = `piety.html?characterId=${encodeURIComponent(item.id)}`;
     pietyLink.textContent = "Piety";
     openCell.appendChild(pietyLink);
+
+    openCell.appendChild(document.createTextNode(" "));
+
+    const factionsLink = document.createElement("a");
+    factionsLink.className = "open-link";
+    factionsLink.href = `factions.html?characterId=${encodeURIComponent(item.id)}`;
+    factionsLink.textContent = "Factions";
+    openCell.appendChild(factionsLink);
     row.appendChild(openCell);
 
     tbody.appendChild(row);

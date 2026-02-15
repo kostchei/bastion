@@ -7,6 +7,7 @@ Static HTML/JS pages for browsing TaleKeeper characters and rendering a printabl
 - `list.html` + `list.js`: Character list UI (loads from `https://api.talekeeper.org/api/collections/users_stats/records`).
 - `index.html` + `index.js`: Printable sheet renderer (loads `?characterId=<id>`).
 - `piety.html` + `piety.js`: Edit God + Piety for a character (patches `piety_deity`, `piety_score`).
+- `factions.html` + `factions.js`: Edit Allegiance ranks for a character (patches `factions`).
 - `styles.css`: Sheet styling.
 
 ## Recent Updates (Sidebar / Right Column)

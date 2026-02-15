@@ -6,6 +6,7 @@ This repo now contains a lightweight static frontend for viewing TaleKeeper char
 - `index.html` renders a selected character in printable sheet format.
 - `proficiencies.html` edits `users_stats.proficiencies` for a character (requires auth token).
 - `piety.html` edits `users_stats.piety_deity` and `users_stats.piety_score` for a character (requires auth token).
+- `factions.html` edits `users_stats.factions` for a character (requires auth token).
 
 `index.html` sidebar extras:
 - XP
@@ -23,6 +24,8 @@ This repo now contains a lightweight static frontend for viewing TaleKeeper char
 - `proficiencies.js`
 - `piety.html`
 - `piety.js`
+- `factions.html`
+- `factions.js`
 - `styles.css`
 - `PRD-local-character-editor.md`
 - `staticwebapp.config.json`

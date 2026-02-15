@@ -539,6 +539,12 @@ async function initSheetLoader() {
     pietyLink.href = `piety.html?characterId=${encodeURIComponent(characterId)}`;
   }
 
+  const factionsLink = document.getElementById("factions-link");
+  if (factionsLink) {
+    factionsLink.hidden = false;
+    factionsLink.href = `factions.html?characterId=${encodeURIComponent(characterId)}`;
+  }
+
   setStatus(`Loading character ${characterId}...`, "loading");
 
   const token = readAuthToken();
