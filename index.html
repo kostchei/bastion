@@ -2,231 +2,253 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A powerful spreadsheet application with formulas, themes, and print support" />
-  <title>Bastions Spreadsheet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Cinzel:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
-    rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Starter Sheet</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js" defer></script>
+    <style>
+        #sheet-status {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001;
+            padding: 0.45rem 0.7rem;
+            border: 2px solid #222;
+            background: #fff;
+            font-weight: 700;
+            font-size: 0.8rem;
+            max-width: 80vw;
+            text-align: center;
+        }
+
+        #sheet-status[data-state="error"] {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        #sheet-status[data-state="ok"] {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        #sheet-status.is-hidden {
+            display: none !important;
+        }
+
+        .print-mode #sheet-status {
+            display: none !important;
+        }
+
+        #list-link {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            padding: 0.45rem 0.7rem;
+            border: 2px solid #222;
+            background: #fff;
+            color: #111;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        @media print {
+            #sheet-status {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div id="app">
-    <!-- Toolbar -->
-    <header class="toolbar" id="toolbar">
-      <div class="toolbar-group toolbar-file">
-        <button class="toolbar-btn" id="btn-new" title="New Spreadsheet">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 1h7l4 4v10H3V1z" stroke="currentColor" stroke-width="1.5" />
-            <path d="M10 1v4h4" stroke="currentColor" stroke-width="1.5" />
-          </svg>
-        </button>
-        <button class="toolbar-btn" id="btn-open" title="Open Spreadsheet">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 4h4l2 2h6v8H2V4z" stroke="currentColor" stroke-width="1.3" />
-            <path d="M2 8h12l-2 6H4L2 8z" stroke="currentColor" stroke-width="1.3" />
-          </svg>
-        </button>
-        <button class="toolbar-btn" id="btn-save" title="Save (Ctrl+S)">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 1h10l3 3v11H2V1z" stroke="currentColor" stroke-width="1.3" />
-            <path d="M5 1v4h6V1" stroke="currentColor" stroke-width="1.3" />
-            <rect x="4" y="9" width="8" height="5" rx="1" stroke="currentColor" stroke-width="1.3" />
-          </svg>
-        </button>
-        <button class="toolbar-btn" id="btn-save-as" title="Save As...">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 1h10l3 3v11H2V1z" stroke="currentColor" stroke-width="1.3" />
-            <path d="M5 1v4h6V1" stroke="currentColor" stroke-width="1.3" />
-            <rect x="4" y="9" width="8" height="5" rx="1" stroke="currentColor" stroke-width="1.3" /><text x="13" y="8"
-              font-size="8" fill="currentColor" font-weight="bold">+</text>
-          </svg>
-        </button>
-        <input class="sheet-name-input" id="sheet-name" type="text" value="Untitled Spreadsheet" spellcheck="false" />
-      </div>
+    <a id="list-link" href="list.html">Back To Character List</a>
+    <div id="sheet-status" data-state="loading">Load a character from list.html</div>
 
-      <div class="toolbar-divider"></div>
+    <div class="sheet-card">
 
-      <div class="toolbar-group toolbar-format">
-        <select class="toolbar-select" id="font-size" title="Font Size">
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12" selected>12</option>
-          <option value="14">14</option>
-          <option value="16">16</option>
-          <option value="18">18</option>
-          <option value="20">20</option>
-          <option value="24">24</option>
-          <option value="28">28</option>
-          <option value="32">32</option>
-          <option value="36">36</option>
-        </select>
-        <button class="toolbar-btn" id="btn-bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
-        <button class="toolbar-btn" id="btn-italic" title="Italic (Ctrl+I)"><em>I</em></button>
-        <button class="toolbar-btn" id="btn-underline" title="Underline (Ctrl+U)"><u>U</u></button>
-        <button class="toolbar-btn" id="btn-lock" title="Lock / Unlock Cell">🔒</button>
-        <button class="toolbar-btn" id="btn-protect" title="Toggle Sheet Protection">🛡️</button>
-        <button class="toolbar-btn" id="btn-border" title="Toggle Borders" style="font-size: 14px;">🔲</button>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <div class="toolbar-group toolbar-align">
-        <button class="toolbar-btn" id="btn-align-left" title="Align Left">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 3h12M2 6h8M2 9h10M2 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-        </button>
-        <button class="toolbar-btn" id="btn-align-center" title="Align Center">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 3h12M4 6h8M3 9h10M5 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-        </button>
-        <button class="toolbar-btn" id="btn-align-right" title="Align Right">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 3h12M6 6h8M4 9h10M8 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-        </button>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <div class="toolbar-group toolbar-colors">
-        <div class="color-picker-wrapper">
-          <button class="toolbar-btn color-btn" id="btn-text-color" title="Text Color">
-            <span class="color-icon">A</span>
-            <span class="color-indicator" id="text-color-indicator" style="background:#000000"></span>
-          </button>
-          <input type="color" id="text-color-input" class="hidden-color-input" value="#000000" />
+        <div class="sheet-header">
+            <div class="level-badge">Level 1</div>
+            <div class="class-name">Barbarian</div>
         </div>
-        <div class="color-picker-wrapper">
-          <button class="toolbar-btn color-btn" id="btn-bg-color" title="Fill Color">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="2" width="12" height="12" rx="2" fill="currentColor" opacity="0.3" />
-            </svg>
-            <span class="color-indicator" id="bg-color-indicator" style="background:transparent"></span>
-          </button>
-          <input type="color" id="bg-color-input" class="hidden-color-input" value="#ffffff" />
+
+        <div class="sheet-body">
+
+            <div class="abilities-panel">
+                <div class="abilities-title">Ability Modifiers<br>Saving Throws &amp; Skills</div>
+
+                <div class="ability-group">
+                    <div class="ability-col">
+                        <div class="ability-label">Strength</div>
+                        <div class="ability-mod">+3</div>
+                        <div class="skill-line save-line"><span class="mod-val">+5</span> STR Save</div>
+                        <div class="skill-line"><span class="mod-val">+5</span> Athletics</div>
+                    </div>
+                    <div class="ability-col">
+                        <div class="ability-label">Dexterity</div>
+                        <div class="ability-mod">+2</div>
+                        <div class="skill-line save-line"><span class="mod-val">+2</span> DEX Save</div>
+                        <div class="skill-line"><span class="mod-val">+2</span> Acrobatics</div>
+                        <div class="skill-line"><span class="mod-val">+2</span> Slight of Hand</div>
+                        <div class="skill-line"><span class="mod-val">+2</span> Stealth</div>
+                    </div>
+                </div>
+
+                <div class="ability-group">
+                    <div class="ability-col">
+                        <div class="ability-label">Constitution</div>
+                        <div class="ability-mod">+2</div>
+                        <div class="skill-line save-line"><span class="mod-val">+4</span> CON Save</div>
+                    </div>
+                    <div class="ability-col">
+                        <div class="ability-label">Intelligence</div>
+                        <div class="ability-mod">+0</div>
+                        <div class="skill-line save-line"><span class="mod-val">+0</span> INT Save</div>
+                        <div class="skill-line"><span class="mod-val">+0</span> Arcana</div>
+                        <div class="skill-line"><span class="mod-val">+0</span> History</div>
+                        <div class="skill-line"><span class="mod-val">+0</span> Investigation</div>
+                        <div class="skill-line"><span class="mod-val">+2</span> Nature</div>
+                        <div class="skill-line"><span class="mod-val">+0</span> Religion</div>
+                    </div>
+                </div>
+
+                <div class="ability-group">
+                    <div class="ability-col">
+                        <div class="ability-label">Wisdom</div>
+                        <div class="ability-mod">+1</div>
+                        <div class="skill-line save-line"><span class="mod-val">+1</span> WIS Save</div>
+                        <div class="skill-line"><span class="mod-val">+1</span> Animal Handling</div>
+                        <div class="skill-line"><span class="mod-val">+1</span> Insight</div>
+                        <div class="skill-line"><span class="mod-val">+1</span> Medicine</div>
+                        <div class="skill-line"><span class="mod-val">+1</span> Perception</div>
+                        <div class="skill-line"><span class="mod-val">+3</span> Survival</div>
+                    </div>
+                    <div class="ability-col">
+                        <div class="ability-label">Charisma</div>
+                        <div class="ability-mod">-1</div>
+                        <div class="skill-line save-line"><span class="mod-val">-1</span> CHA Save</div>
+                        <div class="skill-line"><span class="mod-val">-1</span> Deception</div>
+                        <div class="skill-line"><span class="mod-val">+1</span> Intimidation</div>
+                        <div class="skill-line"><span class="mod-val">-1</span> Performance</div>
+                        <div class="skill-line"><span class="mod-val">-1</span> Persuasion</div>
+                    </div>
+                </div>
+
+                <div class="heroic-inspiration">
+                    <div class="heroic-label">Heroic<br>Inspiration</div>
+                    <div class="inspiration-circle"></div>
+                </div>
+            </div>
+
+            <div class="center-area">
+                <div class="center-columns">
+                    <div class="center-col-left">
+                        <div class="init-speed-row">
+                            <div class="stat-block">
+                                <div class="label-bar">Initiative</div>
+                                <div class="stat-value">+2</div>
+                            </div>
+                            <div class="stat-block">
+                                <div class="label-bar">Speed</div>
+                                <div class="stat-value">30 Feet</div>
+                            </div>
+                        </div>
+
+                        <div class="hp-block">
+                            <div class="label-bar">Hit Point Maximum</div>
+                            <div class="hp-area">
+                                <div class="hp-value">14</div>
+                                <div class="hp-text">
+                                    Place Hit Point Tokens here.
+                                    Remove them as you take damage.
+                                </div>
+                                <div class="hp-text" style="margin-top: 0.3rem;">
+                                    If you are reduced to 0 Hit Points,
+                                    see the "Dropping to 0 Hit Points"
+                                    section on page 16 of the Play Guide.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-slot"></div>
+
+                        <div class="green-label">Equipment</div>
+                    </div>
+
+                    <div class="center-col-right">
+                        <div class="card-slot"></div>
+
+                        <div class="green-label">Equipment</div>
+
+                        <div class="card-slot"></div>
+
+                        <div class="green-label">Equipment</div>
+                    </div>
+                </div>
+
+                <div class="attack-footer">
+                    <div class="attack-line">Melee Attack Rolls: +5</div>
+                    <div class="attack-line">Ranged Attack Rolls: +5</div>
+                </div>
+            </div>
+
+            <div class="features-panel">
+
+                <div class="class-features-box">
+                    <div class="class-features-title">Barbarian Class Features</div>
+                    <div class="class-features-content">
+                        <h4>Rage</h4>
+                        <p>As a Bonus Action, remove 1 Power Token to enter a Rage, gaining +2 damage with Strength
+                            attacks and resistance to bludgeoning, piercing, and slashing damage.</p>
+                    </div>
+                </div>
+
+                <div class="side-tab-zone">
+                    <div class="side-tab-inner">
+                        <div class="token-circles">
+                            <div class="token-circle"></div>
+                            <div class="token-circle"></div>
+                        </div>
+                    </div>
+                    <div class="side-tab species">Species Card</div>
+                </div>
+
+                <div class="gaining-level"><em>Gaining a Level.</em></div>
+
+                <div class="side-tab-zone background-zone">
+                    <div class="side-tab-inner"></div>
+                    <div class="side-tab background">Background Card</div>
+                </div>
+
+                <div class="rest-info">
+                    <p>After a <strong>Short Rest:</strong></p>
+                    <ul>
+                        <li>Regain 8 Hit Point Tokens.</li>
+                        <li>Restore 1 expended Power Token on Rage.</li>
+                    </ul>
+                    <p>After a <strong>Long Rest:</strong></p>
+                    <ul>
+                        <li>Regain all Hit Point Tokens and all expended Power Tokens.</li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <div class="toolbar-group toolbar-theme">
-        <select class="toolbar-select" id="palette-select" title="Color Palette">
-          <option value="midnight">🌙 Midnight</option>
-          <option value="parchment">📜 Parchment</option>
-          <option value="ocean">🌊 Ocean</option>
-          <option value="forest">🌲 Forest</option>
-          <option value="amethyst">💎 Amethyst</option>
-          <option value="monochrome">⬛ Monochrome</option>
-        </select>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <div class="toolbar-group toolbar-actions">
-        <button class="toolbar-btn" id="btn-char-sheet" title="New D&D Character Sheet">
-          ⚔️
-        </button>
-        <button class="toolbar-btn" id="btn-share" title="Share as URL">
-          📤
-        </button>
-        <button class="toolbar-btn" id="btn-print" title="Print / PDF (Ctrl+P)">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M4 5V1h8v4M4 11H2V7h12v4h-2M4 11v4h8v-4H4z" stroke="currentColor" stroke-width="1.2" />
-          </svg>
-        </button>
-        <button class="toolbar-btn" id="btn-visual-sheet" title="View Character Sheet">
-          📜
-        </button>
-      </div>
-    </header>
-
-    <!-- Formula Bar -->
-    <div class="formula-bar" id="formula-bar">
-      <div class="cell-address" id="cell-address">A1</div>
-      <div class="formula-separator">
-        <span class="fx-label">fx</span>
-      </div>
-      <input class="formula-input" id="formula-input" type="text" spellcheck="false"
-        placeholder="Enter value or formula (e.g. =SUM(A1:A10))" />
     </div>
 
-    <!-- Grid -->
-    <div class="grid-wrapper" id="grid-wrapper">
-      <div class="grid-container" id="grid-container">
-        <!-- JS will render the grid here -->
-      </div>
-    </div>
+    <button id="print-toggle"
+        style="position: fixed; top: 1rem; right: 1rem; padding: 0.5rem 1rem; font-weight: bold; cursor: pointer; z-index: 1001; background: white; border: 2px solid black;">
+        Toggle Print Mode
+    </button>
 
-    <!-- Status Bar -->
-    <footer class="status-bar" id="status-bar">
-      <span class="status-left" id="status-info">Ready</span>
-      <span class="status-right" id="status-summary"></span>
-    </footer>
-
-    <!-- File Manager Modal -->
-    <div class="modal-overlay" id="file-modal-overlay" style="display:none">
-      <div class="modal" id="file-modal">
-        <div class="modal-header">
-          <h2 class="modal-title">Open Spreadsheet</h2>
-          <button class="modal-close" id="file-modal-close">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="file-list" id="file-list">
-            <!-- JS populates this -->
-          </div>
-          <div class="file-empty" id="file-empty" style="display:none">
-            <p>No saved spreadsheets yet.</p>
-            <p class="file-empty-hint">Create one with the <strong>New</strong> button and it will auto-save here.</p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-btn modal-btn-secondary" id="file-modal-cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats Summary Panel -->
-    <div id="stats-panel-backdrop"></div>
-    <div id="stats-panel">
-      <button class="stats-close" id="stats-panel-close">✕</button>
-      <div class="board-layout">
-        <!-- Left Sidebar: Abilities & Skills -->
-        <div class="board-sidebar" id="board-sidebar">
-          <div class="board-header-abilities">ABILITY MODIFIERS & SKILLS</div>
-          <div id="stats-grid" class="board-abilities-list"></div>
-        </div>
-
-        <!-- Main Content: Combat Stats & Cards -->
-        <div class="board-main">
-          <!-- Top Row: Initiative, Speed, HP -->
-          <div class="board-combat-row" id="board-combat-stats">
-            <!-- JS populates -->
-          </div>
-
-          <!-- Middle Row: Attacks / Actions -->
-          <div class="board-card-row" id="board-actions">
-            <!-- JS populates -->
-          </div>
-
-          <!-- Bottom Row: Equipment -->
-          <div class="board-card-row" id="board-equipment">
-            <!-- JS populates -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Save notification toast -->
-    <div class="save-toast" id="save-toast">Saved ✓</div>
-  </div>
-
-  <script type="module" src="/src/main.ts"></script>
+    <script>
+        const toggleBtn = document.getElementById('print-toggle');
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('print-mode');
+        });
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaleKeeper Character List</title>
+    <script src="list.js" defer></script>
+    <style>
+        :root {
+            --bg: #efe6d4;
+            --card: #fff9ee;
+            --ink: #2f1f15;
+            --line: #7a5f49;
+            --accent: #4f7c2a;
+            --danger: #8f1c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            background: radial-gradient(circle at top left, #f8f0df, var(--bg));
+            color: var(--ink);
+            padding: 1rem;
+        }
+
+        .layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .panel {
+            border: 2px solid var(--line);
+            background: var(--card);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        h1 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.9rem;
+        }
+
+        p {
+            margin: 0.4rem 0;
+        }
+
+        .status {
+            border-left: 4px solid var(--line);
+            background: #f7f3eb;
+            padding: 0.6rem 0.7rem;
+            font-weight: 700;
+        }
+
+        .status.ok {
+            border-left-color: var(--accent);
+        }
+
+        .status.error {
+            border-left-color: var(--danger);
+        }
+
+        .auth-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 960px) {
+            .auth-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .field-row {
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        label {
+            font-weight: 700;
+        }
+
+        input,
+        textarea,
+        button {
+            font: inherit;
+            padding: 0.5rem 0.55rem;
+            border: 1px solid #6d5842;
+            border-radius: 6px;
+            background: #fff;
+            color: #20140d;
+        }
+
+        textarea {
+            min-height: 5.5rem;
+            resize: vertical;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #bca88c;
+            padding: 0.45rem 0.5rem;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #e7d7c0;
+        }
+
+        .muted {
+            color: #5e4d3b;
+            font-size: 0.9rem;
+        }
+
+        .open-link {
+            display: inline-block;
+            border: 1px solid #3f3327;
+            background: #fff8d9;
+            padding: 0.25rem 0.45rem;
+            border-radius: 4px;
+            color: #111;
+            text-decoration: none;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="layout">
+        <section class="panel">
+            <h1>TaleKeeper Character List</h1>
+            <p>Data source: <code>https://api.talekeeper.org/api/collections/users_stats/records</code></p>
+            <p class="muted">This page lists visible characters, then opens <code>index.html</code> using the selected record id.</p>
+            <div id="status" class="status">Ready.</div>
+        </section>
+
+        <section class="panel auth-grid">
+            <div class="field-row">
+                <label for="token-input">PocketBase Token (JWT or auth JSON)</label>
+                <textarea id="token-input"
+                    placeholder='Paste token string, or JSON like {"token":"...","record":{"global_role":"GM"}}'></textarea>
+                <div class="button-row">
+                    <button id="save-token" type="button">Save Token</button>
+                    <button id="clear-token" type="button">Clear Token</button>
+                    <button id="refresh-list" type="button">Refresh Characters</button>
+                </div>
+                <p class="muted">Use a token from your TaleKeeper session if records are not public.</p>
+            </div>
+
+            <form id="superuser-login" class="field-row">
+                <label for="superuser-identity">Optional Superuser Login</label>
+                <input id="superuser-identity" name="identity" placeholder="email" autocomplete="username">
+                <input id="superuser-password" name="password" type="password" placeholder="password"
+                    autocomplete="current-password">
+                <div class="button-row">
+                    <button type="submit">Auth _superusers</button>
+                </div>
+                <p class="muted">If successful, the returned token is stored and used for list/sheet loading.</p>
+            </form>
+        </section>
+
+        <section class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Level</th>
+                        <th>Species</th>
+                        <th>Updated</th>
+                        <th>Open</th>
+                    </tr>
+                </thead>
+                <tbody id="character-rows">
+                    <tr>
+                        <td colspan="6">No records loaded.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+
+</html>
