@@ -221,6 +221,7 @@ function renderCharacterRows(items) {
     const level = calcLevel(item.levels, item.class_name);
 
     const openUrl = `index.html?characterId=${encodeURIComponent(item.id)}`;
+    const profUrl = `proficiencies.html?characterId=${encodeURIComponent(item.id)}`;
     const name = String(item.character_name || "Unnamed Hero");
     const className = String(item.class_name || "Commoner");
     const species = String(item.species || "-");
@@ -251,6 +252,14 @@ function renderCharacterRows(items) {
     link.href = openUrl;
     link.textContent = "Open Sheet";
     openCell.appendChild(link);
+
+    openCell.appendChild(document.createTextNode(" "));
+
+    const profLink = document.createElement("a");
+    profLink.className = "open-link";
+    profLink.href = profUrl;
+    profLink.textContent = "Proficiencies";
+    openCell.appendChild(profLink);
     row.appendChild(openCell);
 
     tbody.appendChild(row);

@@ -1753,6 +1753,16 @@
       },
       {
         "hidden": false,
+        "id": "json_proficiencies",
+        "maxSize": 0,
+        "name": "proficiencies",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "json"
+      },
+      {
+        "hidden": false,
         "id": "json_bastion",
         "maxSize": 0,
         "name": "bastion",

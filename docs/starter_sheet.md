@@ -1,8 +1,8 @@
 # Starter Sheet (Local Viewer)
 
-Static HTML/JS pages for browsing TaleKeeper characters and rendering a printable “starter sheet”.
+Static HTML/JS pages for browsing TaleKeeper characters and rendering a printable "starter sheet".
 
-## What’s Here
+## What's Here
 
 - `list.html` + `list.js`: Character list UI (loads from `https://api.talekeeper.org/api/collections/users_stats/records`).
 - `index.html` + `index.js`: Printable sheet renderer (loads `?characterId=<id>`).
@@ -10,14 +10,14 @@ Static HTML/JS pages for browsing TaleKeeper characters and rendering a printabl
 
 ## Recent Updates (Sidebar / Right Column)
 
-The right-hand “features” column in `index.html` now shows:
+The right-hand "features" column in `index.html` now shows:
 
 - **Feats** (from `feats`)
 - **God** + **Piety** (from `piety_deity`, `piety_score`)
 - **Highest-ranked Allegiance** (derived from `factions`; hidden if none have rank > 0)
 - **XP** (from `xp`)
 
-Also removed the “Gaining a Level” placeholder from that section.
+Also removed the "Gaining a Level" placeholder from that section.
 
 ## How To Use
 

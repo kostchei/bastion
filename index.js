@@ -141,6 +141,78 @@ function parseJsonMaybe(value) {
   }
 }
 
+function normalizeKey(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\u2019\u2018`]/g, "'")
+    .replace(/\s+/g, " ");
+}
+
+function normalizeProficiencyLevel(value) {
+  const text = String(value || "").trim().toLowerCase();
+  if (text === "none" || text === "half" || text === "full" || text === "expertise") return text;
+  if (text === "proficient") return "full";
+  return "";
+}
+
+function proficiencyBonusForLevel(levelTag, proficiencyBonus) {
+  const level = normalizeProficiencyLevel(levelTag) || "none";
+  if (level === "half") return Math.floor(proficiencyBonus / 2);
+  if (level === "full") return proficiencyBonus;
+  if (level === "expertise") return proficiencyBonus * 2;
+  return 0;
+}
+
+function extractSkillProficienciesMap(proficienciesValue) {
+  const parsed = parseJsonMaybe(proficienciesValue);
+  const out = new Map();
+  if (!parsed) return out;
+
+  const SLIGHT_KEY = normalizeKey("slight of hand");
+  const SLEIGHT_KEY = normalizeKey("sleight of hand");
+
+  const upsert = (name, level) => {
+    const key = normalizeKey(name);
+    const normalizedLevel = normalizeProficiencyLevel(level) || "none";
+    if (!key) return;
+    out.set(key, normalizedLevel);
+  };
+
+  // Preferred shape: { skills: { "Acrobatics": "full", ... }, ... }
+  if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+    if (parsed.skills && typeof parsed.skills === "object" && !Array.isArray(parsed.skills)) {
+      for (const [name, level] of Object.entries(parsed.skills)) upsert(name, level);
+      // Common typo compatibility.
+      if (out.has(SLIGHT_KEY) && !out.has(SLEIGHT_KEY)) out.set(SLEIGHT_KEY, out.get(SLIGHT_KEY));
+      if (out.has(SLEIGHT_KEY) && !out.has(SLIGHT_KEY)) out.set(SLIGHT_KEY, out.get(SLEIGHT_KEY));
+      return out;
+    }
+
+    // Legacy: flat object map -> treat as skills.
+    for (const [name, level] of Object.entries(parsed)) upsert(name, level);
+    if (out.has(SLIGHT_KEY) && !out.has(SLEIGHT_KEY)) out.set(SLEIGHT_KEY, out.get(SLIGHT_KEY));
+    if (out.has(SLEIGHT_KEY) && !out.has(SLIGHT_KEY)) out.set(SLIGHT_KEY, out.get(SLEIGHT_KEY));
+    return out;
+  }
+
+  // Array shape: [{type:'skills', name:'Acrobatics', level:'full'}]
+  if (Array.isArray(parsed)) {
+    for (const entry of parsed) {
+      if (!entry || typeof entry !== "object") continue;
+      const kind = normalizeKey(entry.type || entry.category || entry.kind || "");
+      if (kind && !kind.includes("skill")) continue;
+      const name = entry.name || entry.title || entry.skill || "";
+      const level = entry.level ?? entry.proficiency ?? entry.value;
+      upsert(name, level);
+    }
+    if (out.has(SLIGHT_KEY) && !out.has(SLEIGHT_KEY)) out.set(SLEIGHT_KEY, out.get(SLIGHT_KEY));
+    if (out.has(SLEIGHT_KEY) && !out.has(SLIGHT_KEY)) out.set(SLIGHT_KEY, out.get(SLEIGHT_KEY));
+  }
+
+  return out;
+}
+
 function pickHighestRankedFaction(factionsValue) {
   const factions = parseJsonMaybe(factionsValue);
   if (!factions) return null;
@@ -263,6 +335,7 @@ function buildViewModel(record) {
   const className = String(record.class_name || "Commoner").trim() || "Commoner";
   const level = calcLevel(record.levels, className, 1);
   const proficiency = calcProficiency(level);
+  const skillProficiencies = extractSkillProficienciesMap(record.proficiencies);
 
   const abilities = {
     str: safeInt(record.strength, 10),
@@ -293,7 +366,9 @@ function buildViewModel(record) {
 
   const skills = {};
   for (const [skillName, ability] of Object.entries(SKILL_TO_ABILITY)) {
-    skills[skillName] = formatMod(mods[ability]);
+    const profLevel = skillProficiencies.get(normalizeKey(skillName)) || "none";
+    const bonus = proficiencyBonusForLevel(profLevel, proficiency);
+    skills[skillName] = formatMod(mods[ability] + bonus);
   }
 
   const hpMaxDefault = Math.max(1, 10 + mods.con);
@@ -450,6 +525,12 @@ async function initSheetLoader() {
   if (!characterId) {
     setStatus("No character selected. Open list.html first.", "error");
     return;
+  }
+
+  const profLink = document.getElementById("proficiencies-link");
+  if (profLink) {
+    profLink.hidden = false;
+    profLink.href = `proficiencies.html?characterId=${encodeURIComponent(characterId)}`;
   }
 
   setStatus(`Loading character ${characterId}...`, "loading");

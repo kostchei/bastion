@@ -55,6 +55,20 @@
             font-size: 0.8rem;
         }
 
+        #proficiencies-link {
+            position: fixed;
+            top: 3.1rem;
+            left: 1rem;
+            z-index: 1001;
+            padding: 0.45rem 0.7rem;
+            border: 2px solid #222;
+            background: #fff;
+            color: #111;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
         @media print {
             #sheet-status {
                 display: none !important;
@@ -65,6 +79,7 @@
 
 <body>
     <a id="list-link" href="list.html">Back To Character List</a>
+    <a id="proficiencies-link" href="proficiencies.html" hidden>Edit Proficiencies</a>
     <div id="sheet-status" data-state="loading">Load a character from list.html</div>
 
     <div class="sheet-card">
@@ -91,7 +106,7 @@
                         <div class="ability-mod">+2</div>
                         <div class="skill-line save-line"><span class="mod-val">+2</span> DEX Save</div>
                         <div class="skill-line"><span class="mod-val">+2</span> Acrobatics</div>
-                        <div class="skill-line"><span class="mod-val">+2</span> Slight of Hand</div>
+                        <div class="skill-line"><span class="mod-val">+2</span> Sleight of Hand</div>
                         <div class="skill-line"><span class="mod-val">+2</span> Stealth</div>
                     </div>
                 </div>
