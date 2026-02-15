@@ -428,6 +428,63 @@ body {
   padding-right: 36px;
 }
 
+.muted {
+  color: var(--text-mid);
+}
+
+.meta-grid {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: baseline;
+  border-bottom: 1px dotted rgba(62, 34, 21, 0.35);
+  padding-bottom: 0.25rem;
+}
+
+.meta-label {
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-mid);
+  line-height: 1.2;
+}
+
+.meta-label-block {
+  display: block;
+  margin-top: 0.2rem;
+}
+
+.meta-value {
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: right;
+  word-break: break-word;
+}
+
+.meta-block {
+  margin-top: 0.1rem;
+}
+
+.meta-list {
+  margin: 0.25rem 0 0 1.1rem;
+  padding: 0;
+  line-height: 1.35;
+}
+
+.meta-empty {
+  color: var(--text-mid);
+  font-style: italic;
+  list-style: none;
+  margin-left: -1.1rem;
+}
+
 .side-tab {
   position: absolute;
   right: 0;

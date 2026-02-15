@@ -5,6 +5,12 @@ This repo now contains a lightweight static frontend for viewing TaleKeeper char
 - `list.html` lists characters from `https://api.talekeeper.org`.
 - `index.html` renders a selected character in printable sheet format.
 
+`index.html` sidebar extras:
+- XP
+- Feats
+- God + Piety score
+- Highest-ranked Allegiance (derived from `factions`, if any rank > 0)
+
 ## Files Kept
 
 - `list.html`

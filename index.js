@@ -94,6 +94,85 @@ function safeInt(value, fallback = 0) {
   return Number.isFinite(parsed) ? Math.round(parsed) : fallback;
 }
 
+function normalizeStringList(value) {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return [];
+    if (trimmed.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return normalizeStringList(parsed);
+      } catch {
+        return trimmed.split(",").map((s) => s.trim()).filter(Boolean);
+      }
+    }
+    return trimmed.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+
+  if (typeof value === "object") {
+    // e.g. {"feat name": true} or [{"name":"..."}]
+    if (Array.isArray(value)) return normalizeStringList(value);
+    return Object.keys(value)
+      .map((k) => String(k || "").trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function parseJsonMaybe(value) {
+  if (!value) return null;
+  if (typeof value === "object") return value;
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    return null;
+  }
+}
+
+function pickHighestRankedFaction(factionsValue) {
+  const factions = parseJsonMaybe(factionsValue);
+  if (!factions) return null;
+
+  // Common shape: {"Faction Name": 0|1|2|...}
+  if (!Array.isArray(factions) && typeof factions === "object") {
+    let best = null;
+    for (const [name, rankRaw] of Object.entries(factions)) {
+      const rank = safeInt(rankRaw, 0);
+      const label = String(name || "").trim();
+      if (!label) continue;
+      if (!best || rank > best.rank) best = { name: label, rank };
+    }
+    return best && best.rank > 0 ? best : null;
+  }
+
+  // Fallback: array of objects like [{name,rank}] or [{faction,level}]
+  if (Array.isArray(factions)) {
+    let best = null;
+    for (const entry of factions) {
+      if (!entry || typeof entry !== "object") continue;
+      const name = String(entry.name || entry.faction || entry.title || "").trim();
+      const rank = safeInt(entry.rank ?? entry.level ?? entry.value, 0);
+      if (!name) continue;
+      if (!best || rank > best.rank) best = { name, rank };
+    }
+    return best && best.rank > 0 ? best : null;
+  }
+
+  return null;
+}
+
 function formatMod(value) {
   return value >= 0 ? `+${value}` : `${value}`;
 }
@@ -235,6 +314,11 @@ function buildViewModel(record) {
     level,
     species: String(record.species || "Unknown Species"),
     background: String(record.background || "Unknown Background"),
+    xp: safeInt(record.xp, 0),
+    feats: normalizeStringList(record.feats),
+    god: String(record.piety_deity || "").trim(),
+    piety: safeInt(record.piety_score, 0),
+    highestAllegiance: pickHighestRankedFaction(record.factions),
     abilities,
     mods,
     saves,
@@ -254,6 +338,36 @@ function buildViewModel(record) {
 function setText(selector, value) {
   const element = document.querySelector(selector);
   if (element) element.textContent = value;
+}
+
+function renderTextOrDash(selector, value) {
+  const text = String(value || "").trim();
+  setText(selector, text || "-");
+}
+
+function renderSimpleList(listSelector, items, emptyLabel = "None") {
+  const list = document.querySelector(listSelector);
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  const normalized = Array.isArray(items)
+    ? items.map((s) => String(s || "").trim()).filter(Boolean)
+    : [];
+
+  if (!normalized.length) {
+    const li = document.createElement("li");
+    li.className = "meta-empty";
+    li.textContent = emptyLabel;
+    list.appendChild(li);
+    return;
+  }
+
+  for (const item of normalized) {
+    const li = document.createElement("li");
+    li.textContent = item;
+    list.appendChild(li);
+  }
 }
 
 function renderAbilityMods(mods) {
@@ -299,6 +413,24 @@ function renderSheet(view) {
   if (statValues[1]) statValues[1].textContent = view.speed;
 
   setText(".hp-value", String(view.hpMax));
+
+  renderTextOrDash("#meta-god", view.god);
+  setText("#meta-piety", String(view.piety));
+  setText("#meta-xp", String(view.xp));
+  renderSimpleList("#meta-feats", view.feats, "None");
+
+  const allegianceRow = document.getElementById("meta-allegiance-row");
+  if (allegianceRow) {
+    if (view.highestAllegiance?.name) {
+      allegianceRow.hidden = false;
+      const rankSuffix = Number.isFinite(view.highestAllegiance.rank)
+        ? ` (Rank ${view.highestAllegiance.rank})`
+        : "";
+      setText("#meta-allegiance", `${view.highestAllegiance.name}${rankSuffix}`);
+    } else {
+      allegianceRow.hidden = true;
+    }
+  }
 
   const attacks = document.querySelectorAll(".attack-line");
   if (attacks[0]) attacks[0].textContent = `Melee Attack Rolls: ${view.meleeAttack}`;
