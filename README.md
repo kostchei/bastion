@@ -22,6 +22,17 @@ This repo now contains a lightweight static frontend for viewing TaleKeeper char
 3. Click **Open Sheet** for a character.
 4. `index.html` loads `?characterId=<id>` and renders the sheet.
 
+## Password Login + Reset (Optional)
+
+If you enable `users` password auth in PocketBase, `list.html` can log in with email/password.
+
+If a user fails to authenticate, `list.html` can request a password reset email via PocketBase:
+- `POST /api/collections/users/request-password-reset`
+
+This repo also includes `reset-password.html`, which can complete the reset if you configure your
+PocketBase password reset email template to link to it, e.g.:
+- `https://<your-static-app>/reset-password.html?token={TOKEN}`
+
 ## Local Run
 
 Any static server works. Example with Python:

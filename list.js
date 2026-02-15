@@ -1,12 +1,18 @@
 const API_BASE = "https://api.talekeeper.org";
 const TOKEN_STORAGE_KEY = "tk_pb_token";
 const MODEL_STORAGE_KEY = "tk_pb_auth_model";
+const RESET_THROTTLE_MS = 5 * 60 * 1000; // per-email local throttle to avoid spam
 
 function setStatus(message, kind = "") {
   const statusEl = document.getElementById("status");
   if (!statusEl) return;
   statusEl.textContent = message;
   statusEl.className = `status${kind ? ` ${kind}` : ""}`;
+}
+
+function isLikelyEmail(value) {
+  const v = String(value || "").trim();
+  return v.includes("@") && v.includes(".") && !/\s/.test(v);
 }
 
 function parseTokenInput(input) {
@@ -61,6 +67,73 @@ function authHeaders(token) {
   const headers = {};
   if (token) headers.Authorization = `Bearer ${token}`;
   return headers;
+}
+
+function resetThrottleKey(email) {
+  return `tk_pw_reset_last:${String(email || "").trim().toLowerCase()}`;
+}
+
+function canSendResetNow(email) {
+  if (!isLikelyEmail(email)) return false;
+  try {
+    const raw = localStorage.getItem(resetThrottleKey(email));
+    if (!raw) return true;
+    const last = Number(raw);
+    if (!Number.isFinite(last)) return true;
+    return Date.now() - last > RESET_THROTTLE_MS;
+  } catch {
+    return true;
+  }
+}
+
+function markResetSent(email) {
+  try {
+    localStorage.setItem(resetThrottleKey(email), String(Date.now()));
+  } catch {
+    // ignore
+  }
+}
+
+async function requestPasswordReset(email) {
+  const response = await fetch(`${API_BASE}/api/collections/users/request-password-reset`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: String(email || "").trim() }),
+  });
+
+  // PocketBase commonly returns 204 with no body; treat any 2xx as "accepted".
+  if (response.ok) return;
+
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch {
+    payload = null;
+  }
+  const msg = String(payload?.message || `Reset request failed (${response.status})`);
+  throw new Error(msg);
+}
+
+async function sendResetEmailFlow(email, { auto = false } = {}) {
+  if (!isLikelyEmail(email)) {
+    setStatus("Enter an email address to send a password reset link.", "error");
+    return;
+  }
+
+  if (!canSendResetNow(email)) {
+    setStatus("Password reset already requested recently. Please check email or try again later.", "error");
+    return;
+  }
+
+  setStatus(auto ? "Login failed. Requesting password reset email..." : "Requesting password reset email...", "");
+
+  try {
+    await requestPasswordReset(email);
+    markResetSent(email);
+    setStatus("If that account exists, a password reset email has been sent.", "ok");
+  } catch (error) {
+    setStatus(`Password reset failed: ${error.message}`, "error");
+  }
 }
 
 function calcLevel(levels, className = "") {
@@ -229,6 +302,12 @@ async function handleUserLogin(event) {
     const payload = await response.json();
     if (!response.ok) {
       const msg = String(payload?.message || "");
+      if (response.status === 400 && msg.toLowerCase().includes("failed to authenticate")) {
+        // Common case: wrong password or user doesn't have one yet.
+        // Don't reveal whether the account exists; offer reset email.
+        await sendResetEmailFlow(identity, { auto: true });
+        return;
+      }
       if (
         response.status === 403 &&
         msg.toLowerCase().includes("not configured to allow password authentication")
@@ -281,6 +360,14 @@ function init() {
   const storedToken = readStoredToken();
   if (storedToken) {
     document.getElementById("token-input").value = storedToken;
+  }
+
+  const resetBtn = document.getElementById("send-reset");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      const email = document.getElementById("user-identity")?.value || "";
+      void sendResetEmailFlow(email, { auto: false });
+    });
   }
 
   document.getElementById("save-token").addEventListener("click", handleSaveToken);
