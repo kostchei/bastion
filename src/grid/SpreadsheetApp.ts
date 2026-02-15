@@ -86,7 +86,7 @@ export async function initApp(): Promise<void> {
     $<HTMLDivElement>('stats-panel-backdrop').addEventListener('click', closeStatsPanel);
 
     // Initial render of visual sheet if it exists
-    toggleVisualSheet(true); // Default to visual view for now as we build it
+    toggleVisualSheet(false); // Default to grid view
 }
 
 let visualSheetHelper: import('../sheets/VisualCharacterSheet').VisualCharacterSheet | null = null;

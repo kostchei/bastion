@@ -58,7 +58,16 @@ export class VisualCharacterSheet {
         const classFeatures = getVal(10, 9);
 
         // Attack Footer
-        const attacks = getVal(20, 9) || "Melee Attack Rolls: ⚔ +0"; // Fallback
+        // Rows 13, 14, 15 (indices)
+        const attackRows = [13, 14, 15].map(r => {
+            const name = getVal(r, 4);
+            const bonus = getVal(r, 5);
+            const dmg = getVal(r, 6);
+            if (!name) return null;
+            return `${name}: ${bonus} (${dmg})`;
+        }).filter(Boolean);
+
+        const attacks = attackRows.length > 0 ? attackRows.join(' | ') : "Melee Attack Rolls: ⚔ +0";
 
 
         this.container.innerHTML = `

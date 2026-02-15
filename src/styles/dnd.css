@@ -315,220 +315,261 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/* ─── Class Board Overlay (Redesign) ─── */
 #stats-panel {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 520px;
-    max-height: 80vh;
-    overflow-y: auto;
-    background: #fdfbf7;
-    border: 2px solid #5c5c5c;
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 95vw;
+    height: 90vh;
+    background: #3e3223;
+    /* Dark brown background from ref */
+    border: 4px solid #c6a858;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     z-index: 1000;
     padding: 20px;
     font-family: var(--font-dnd-body);
+    overflow: hidden;
+    color: #fff;
 }
 
-#stats-panel.visible {
-    display: block;
+.board-layout {
+    display: flex;
+    gap: 20px;
+    height: 100%;
 }
 
-#stats-panel-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 999;
+/* Sidebar */
+.board-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: #e6dfc8;
+    /* Parchment */
+    border-radius: 8px;
+    padding: 10px;
+    color: #333;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 2px solid #c6a858;
 }
 
-#stats-panel-backdrop.visible {
-    display: block;
-}
-
-#stats-panel .stats-header {
+.board-header-abilities {
     font-family: var(--font-dnd-heading);
-    font-size: 18px;
     font-weight: 700;
-    color: #1a1a2e;
     text-align: center;
     border-bottom: 2px solid #c6a858;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    color: #4a3b2a;
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-#stats-panel .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+.board-abilities-list {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
-    margin-bottom: 16px;
 }
 
-#stats-panel .stat-card {
-    background: #f0ebe0;
-    border: 1px solid #5c5c5c;
+/* Ability Group */
+.ability-group {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid #ccc;
     border-radius: 6px;
-    padding: 8px;
-    text-align: center;
+    padding: 5px;
 }
 
-#stats-panel .stat-card .stat-name {
-    font-family: var(--font-dnd-heading);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #4a3b2a;
-    margin-bottom: 4px;
+.ability-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    background: #d4c5a0;
+    padding: 4px;
+    border-radius: 4px;
 }
 
-#stats-panel .stat-card .stat-mod {
-    font-family: var(--font-dnd-heading);
-    font-size: 28px;
-    font-weight: 700;
-    color: #1e3a5f;
-    line-height: 1;
-}
-
-#stats-panel .stat-card .stat-score {
-    font-size: 11px;
-    color: #666;
-    margin-top: 2px;
-}
-
-#stats-panel .stat-card .stat-save {
-    font-size: 10px;
-    color: #555;
-    margin-top: 4px;
-    border-top: 1px dotted #ccc;
-    padding-top: 4px;
-}
-
-#stats-panel .stat-card .stat-save.proficient {
-    color: #1a5c32;
+.ability-name {
     font-weight: bold;
-}
-
-#stats-panel .stats-skills {
-    margin-top: 12px;
-}
-
-#stats-panel .stats-skills-header {
     font-family: var(--font-dnd-heading);
-    font-size: 12px;
-    font-weight: 700;
-    color: #4a3b2a;
     text-transform: uppercase;
-    border-bottom: 1px solid #c6a858;
-    padding-bottom: 4px;
-    margin-bottom: 8px;
+    font-size: 12px;
 }
 
-#stats-panel .skill-row {
+.ability-mod-circle {
+    background: #fff;
+    border: 2px solid #4a3b2a;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ability-score-tiny {
+    font-size: 10px;
+    text-align: center;
+    color: #666;
+    margin-top: -2px;
+}
+
+.ability-skills {
+    font-size: 11px;
+}
+
+.b-skill-row {
     display: flex;
     justify-content: space-between;
-    padding: 2px 4px;
-    font-size: 11px;
-    border-bottom: 1px dotted #d4c9b0;
+    border-bottom: 1px dotted #bbb;
+    padding: 1px 0;
 }
 
-#stats-panel .skill-row .skill-name {
-    color: #4a3f2f;
-}
-
-#stats-panel .skill-row .skill-bonus {
+.b-skill-val {
     font-weight: bold;
+}
+
+.b-save-row {
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px;
+    margin-bottom: 2px;
+}
+
+/* Main Area */
+.board-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+/* Combat Row */
+.board-combat-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.combat-stat-card {
+    background: #e6dfc8;
+    border: 2px solid #c6a858;
+    border-radius: 8px;
+    width: 150px;
+    text-align: center;
+    padding: 10px;
+    color: #333;
+}
+
+.combat-stat-label {
     font-family: var(--font-dnd-heading);
-    color: #444;
-    min-width: 30px;
-    text-align: right;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-bottom: 5px;
+    background: #d4c5a0;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
 }
 
-#stats-panel .skill-row.proficient .skill-name::before {
-    content: '● ';
-    color: #1a5c32;
+.combat-stat-value {
+    font-size: 24px;
+    font-weight: bold;
 }
 
-#stats-panel .skill-row:not(.proficient) .skill-name::before {
-    content: '○ ';
-    color: #999;
+/* Card Slot Rows */
+.board-card-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-#stats-panel .skill-row.proficient .skill-bonus {
-    color: #1a5c32;
+.card-slot {
+    flex: 1;
+    min-width: 200px;
+    min-height: 250px;
+    background: #fff;
+    border: 4px solid #76c043;
+    /* Green edge */
+    border-radius: 12px;
+    position: relative;
+    padding: 10px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
 }
 
-#stats-panel .stats-close {
+.card-slot-header {
+    background: #76c043;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 5px;
+    margin: -10px -10px 10px -10px;
+    border-radius: 8px 8px 0 0;
+    /* Only top corners? Actually board has bottom banner */
+}
+
+/* Accessor for bottom banner style */
+.card-slot-footer {
+    background: #76c043;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 5px;
     position: absolute;
-    top: 8px;
-    right: 12px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0 0 8px 8px;
+}
+
+.card-content {
+    flex-grow: 1;
+    margin-bottom: 30px;
+    /* Space for footer */
+}
+
+.slot-empty-text {
+    font-style: italic;
+    color: #999;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Close Button Override */
+#stats-panel-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #fff;
+    font-size: 24px;
     background: none;
     border: none;
-    font-size: 20px;
     cursor: pointer;
-    color: #666;
-    line-height: 1;
+    z-index: 1010;
 }
 
-#stats-panel .stats-close:hover {
-    color: #9e2a2b;
+#stats-panel-close:hover {
+    color: #ffcccc;
 }
 
-/* ─── Print Specific Overrides ─── */
+/* Print Overrides */
 @media print {
 
-    /* Hide grid lines for D&D theme */
-    .theme-dnd .cell {
-        border: none !important;
-        background-color: transparent !important;
-        /* Save ink */
-    }
-
-    /* Re-apply specific borders */
-    .theme-dnd .dnd-ability-name,
-    .theme-dnd .dnd-ability-bg,
-    .theme-dnd .dnd-ability-mod,
-    .theme-dnd .dnd-ability-score,
-    .theme-dnd .dnd-stat-header,
-    .theme-dnd .dnd-stat-value,
-    .theme-dnd .dnd-ac-box,
-    .theme-dnd .dnd-ac-value,
-    .theme-dnd .dnd-hp-box,
-    .theme-dnd .dnd-hp-value,
-    .theme-dnd .dnd-section-header {
-        border-style: solid !important;
-        border-color: #000 !important;
-        box-shadow: none !important;
-        /* No shadows in print */
-        background-color: transparent !important;
-        /* No bg based shading */
-    }
-
-    .theme-dnd .dnd-section-header {
-        border-bottom: 2px solid #000 !important;
-    }
-
-    /* Text contrast */
-    .theme-dnd .dnd-feature-name {
-        color: #000 !important;
-    }
-
-    .theme-dnd .dnd-ac-header {
-        background-color: #000 !important;
-        color: #fff !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-
-    /* Force headers white too */
-    .theme-dnd .col-header,
-    .theme-dnd .row-header,
-    .theme-dnd .grid-corner {
+    #stats-panel,
+    #stats-panel-backdrop {
         display: none !important;
     }
 }
