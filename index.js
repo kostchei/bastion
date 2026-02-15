@@ -43,32 +43,146 @@ const SKILL_TO_ABILITY = {
   "persuasion": "cha",
 };
 
-const FEATURE_BY_CLASS = {
-  barbarian: {
-    title: "Rage",
-    description: "Use your rage to hit harder and endure damage in melee combat.",
-  },
-  fighter: {
-    title: "Second Wind",
-    description: "Recover hit points once per short rest and stay in the fight longer.",
-  },
-  rogue: {
-    title: "Sneak Attack",
-    description: "Deal extra damage once per turn when you strike with advantage or teamwork.",
-  },
-  wizard: {
-    title: "Arcane Recovery",
-    description: "Recover limited spell power after a short rest.",
-  },
-  warlock: {
-    title: "Pact Magic",
-    description: "Cast powerful spells with short-rest spell slot recovery.",
-  },
-  cleric: {
-    title: "Divine Domain",
-    description: "Gain domain features that shape your divine role in the party.",
-  },
+// Keep this in sync with docs/class_features.md.
+// Stored as data in JS (vs. parsing Markdown at runtime) to keep the static app simple.
+const FEATURES_BY_CLASS = {
+  bard: [
+    {
+      title: "Bardic Inspiration",
+      body: [
+        "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.",
+        "Using Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.",
+        "Once within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it's rolled.",
+        "Number of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.",
+      ].join("\n\n"),
+    },
+  ],
+  monk: [
+    {
+      title: "Martial Arts",
+      body: [
+        "Your practice of martial arts gives you mastery of combat styles that use your Unarmed Strike and Monk weapons, which are the following:",
+        "- Simple Melee weapons",
+        "- Martial Melee weapons that have the Light property",
+        "",
+        "You gain the following benefits while you are unarmed or wielding only Monk weapons and you aren't wearing armor or wielding a Shield.",
+        "",
+        "Bonus Unarmed Strike. You can make an Unarmed Strike as a Bonus Action.",
+        "",
+        "Martial Arts Die. You can roll 1d6 in place of the normal damage of your Unarmed Strike or Monk weapons. This die changes as you gain Monk levels, as shown in the Martial Arts column of the Monk Features table.",
+        "",
+        "Dexterous Attacks. You can use your Dexterity modifier instead of your Strength modifier for the attack and damage rolls of your Unarmed Strikes and Monk weapons. In addition, when you use the Grapple or Shove option of your Unarmed Strike, you can use your Dexterity modifier instead of your Strength modifier to determine the save DC.",
+      ].join("\n"),
+    },
+    {
+      title: "Unarmored Defense",
+      body: "While you aren't wearing armor or wielding a Shield, your base Armor Class equals 10 plus your Dexterity and Wisdom modifiers.",
+    },
+  ],
+  sorcerer: [
+    {
+      title: "Spellcasting",
+      body: [
+        "Drawing from your innate magic, you can cast spells.",
+        "",
+        "Cantrips. You know four Sorcerer cantrips of your choice. Whenever you gain a Sorcerer level, you can replace one of your cantrips from this feature with another Sorcerer cantrip of your choice.",
+        "",
+        "Spell Slots. The Sorcerer Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+        "",
+        "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Sorcerer spells.",
+        "",
+        "Changing Your Prepared Spells. Whenever you gain a Sorcerer level, you can replace one spell on your list with another Sorcerer spell for which you have spell slots.",
+        "",
+        "Spellcasting Ability. Charisma is your spellcasting ability for your Sorcerer spells.",
+      ].join("\n"),
+    },
+    {
+      title: "Innate Sorcery",
+      body: [
+        "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:",
+        "- The spell save DC of your Sorcerer spells increases by 1.",
+        "- You have Advantage on the attack rolls of Sorcerer spells you cast.",
+        "",
+        "You can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
+      ].join("\n"),
+    },
+  ],
+  rogue: [
+    {
+      title: "Sneak Attack",
+      body: [
+        "You know how to strike subtly and exploit a foe's distraction. Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack roll if you have Advantage on the roll and the attack uses a Finesse or a Ranged weapon. The extra damage's type is the same as the weapon's type.",
+        "",
+        "You don't need Advantage on the attack roll if at least one of your allies is within 5 feet of the target, the ally doesn't have the Incapacitated condition, and you don't have Disadvantage on the attack roll.",
+      ].join("\n"),
+    },
+    {
+      title: "Weapon Mastery",
+      body: [
+        "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Daggers and Shortbows.",
+        "",
+        "Whenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Scimitars and Shortswords.",
+      ].join("\n"),
+    },
+  ],
+  warlock: [
+    {
+      title: "Eldritch Invocations",
+      body: [
+        "You have unearthed Eldritch Invocations, pieces of forbidden knowledge that imbue you with an abiding magical ability or other lessons. You gain one invocation of your choice, such as Pact of the Chain.",
+        "",
+        "Replacing and Gaining Invocations. Whenever you gain a Warlock level, you can replace one of your invocations with another one for which you qualify. You can't replace an invocation if it's a prerequisite for another invocation that you have.",
+      ].join("\n"),
+    },
+    {
+      title: "Pact Magic",
+      body: [
+        "Through occult ceremony, you have formed a pact with a mysterious entity to gain magical powers. The entity is a voice in the shadows-its identity unclear-but its boon to you is concrete: the ability to cast spells.",
+        "",
+        "Cantrips. You know two Warlock cantrips of your choice. Whenever you gain a Warlock level, you can replace one of your cantrips from this feature with another Warlock cantrip of your choice.",
+        "",
+        "When you reach Warlock levels 4 and 10, you learn another Warlock cantrip of your choice, as shown in the Cantrips column of the Warlock Features table.",
+        "",
+        "Spell Slots. The Warlock Features table shows how many spell slots you have to cast your Warlock spells of levels 1-5. The table also shows the level of those slots, all of which are the same level. You regain all expended Pact Magic spell slots when you finish a Short or Long Rest.",
+      ].join("\n"),
+    },
+  ],
+  barbarian: [
+    {
+      title: "Rage",
+      body: "Use your rage to hit harder and endure damage in melee combat.",
+    },
+  ],
+  fighter: [
+    {
+      title: "Second Wind",
+      body: "Recover hit points once per short rest and stay in the fight longer.",
+    },
+  ],
+  wizard: [
+    {
+      title: "Arcane Recovery",
+      body: "Recover limited spell power after a short rest.",
+    },
+  ],
+  cleric: [
+    {
+      title: "Divine Domain",
+      body: "Gain domain features that shape your divine role in the party.",
+    },
+  ],
 };
+
+function normalizeClassFeatures(classKey) {
+  const features = FEATURES_BY_CLASS[classKey];
+  if (!features || !Array.isArray(features) || !features.length) return [];
+  return features
+    .map((f) => ({
+      title: String(f?.title || "").trim(),
+      body: String(f?.body || "").trim(),
+    }))
+    .filter((f) => f.title && f.body);
+}
 
 function setStatus(message, state = "loading") {
   const statusEl = document.getElementById("sheet-status");
@@ -378,11 +492,6 @@ function buildViewModel(record) {
   const rangedAttack = formatMod(mods.dex + proficiency);
   const initiative = formatMod(mods.dex);
 
-  const feature = FEATURE_BY_CLASS[classKey] || {
-    title: "Core Features",
-    description: "Class-specific features are tracked in TaleKeeper.",
-  };
-
   return {
     characterName: String(record.character_name || "Unnamed Hero"),
     className,
@@ -403,8 +512,7 @@ function buildViewModel(record) {
     meleeAttack,
     rangedAttack,
     speed: "30 Feet",
-    featureTitle: feature.title,
-    featureDescription: feature.description,
+    classFeatures: normalizeClassFeatures(classKey),
     updated: String(record.updated || ""),
     id: String(record.id || ""),
   };
@@ -476,6 +584,46 @@ function renderSavesAndSkills(saves, skills) {
   });
 }
 
+function renderClassFeatures(className, features) {
+  setText(".class-features-title", `${className} Class Features`);
+
+  const host = document.getElementById("class-features-items") || document.querySelector(".class-features-content");
+  if (!host) return;
+
+  host.innerHTML = "";
+
+  const normalized = Array.isArray(features) ? features : [];
+  if (!normalized.length) {
+    const item = document.createElement("div");
+    item.className = "class-feature-item";
+    const h4 = document.createElement("h4");
+    h4.textContent = "Core Features";
+    const body = document.createElement("div");
+    body.className = "class-feature-body";
+    body.textContent = "Class-specific features are tracked in TaleKeeper.";
+    item.appendChild(h4);
+    item.appendChild(body);
+    host.appendChild(item);
+    return;
+  }
+
+  for (const feature of normalized) {
+    const item = document.createElement("div");
+    item.className = "class-feature-item";
+
+    const h4 = document.createElement("h4");
+    h4.textContent = feature.title;
+    item.appendChild(h4);
+
+    const body = document.createElement("div");
+    body.className = "class-feature-body";
+    body.textContent = feature.body;
+    item.appendChild(body);
+
+    host.appendChild(item);
+  }
+}
+
 function renderSheet(view) {
   setText(".level-badge", `Level ${view.level}`);
   setText(".class-name", view.className);
@@ -512,9 +660,7 @@ function renderSheet(view) {
   if (attacks[0]) attacks[0].textContent = `Melee Attack Rolls: ${view.meleeAttack}`;
   if (attacks[1]) attacks[1].textContent = `Ranged Attack Rolls: ${view.rangedAttack}`;
 
-  setText(".class-features-title", `${view.className} Class Features`);
-  setText(".class-features-content h4", view.featureTitle);
-  setText(".class-features-content p", view.featureDescription);
+  renderClassFeatures(view.className, view.classFeatures);
   setText(".side-tab.species", view.species);
   setText(".side-tab.background", view.background);
 }

@@ -418,6 +418,16 @@ body {
   min-height: 100px;
 }
 
+.class-feature-item + .class-feature-item {
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px dotted var(--brown-light);
+}
+
+.class-feature-body {
+  white-space: pre-line;
+}
+
 .class-features-content h4 {
   font-weight: 700;
   margin-top: 0.3rem;
