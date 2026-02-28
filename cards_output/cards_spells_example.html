@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cards_spells_example</title>
+    <link rel="stylesheet" href="../cards.css">
+    <style>
+        .page { page-break-after: always; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 2mm; width: 210mm; padding: 5mm; background: white; margin-bottom: 2rem;}
+        @media print {
+            body { background-color: white; padding: 0; margin: 0;}
+            .print-controls { display: none; }
+            .page { box-shadow: none; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-controls">
+        <button onclick="window.print()">Print Cards (A4)</button>
+        <p>Ensure printer settings are set to scale: 100% or "Actual Size".<br>
+        Cut along the dashed lines, fold along the dotted center line, and glue the halves together.</p>
+    </div>
+
+    <div class="page">
+
+        <div class="card">
+            <div class="card-face back">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">FIREBALL</h1>
+                        <div class="card-subtitle">Components & Higher Levels</div>
+                    </div>
+                    <div class="card-banner spell-banner">
+                        <strong>Details</strong>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Materials:</strong> A tiny ball of bat guano and sulfur.</p><p><strong>At Higher Levels:</strong> When you cast this spell using a spell slot of 4th level or higher...</p>
+                    </div>
+                    <div class="card-footer spell-footer"></div>
+                </div>
+            </div>
+            <div class="card-face front">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">FIREBALL</h1>
+                        <div class="card-subtitle">3rd-Level Evocation</div>
+                    </div>
+                    <div class="card-banner spell-banner">
+                        <strong>Casting Time:</strong> 1 Action<br>
+                        <strong>Range:</strong> 150 Feet<br>
+                        <strong>Components:</strong> V, S, M
+                    </div>
+                    <div class="card-body">
+                        <p>A bright streak flashes from your pointing finger to a point you choose...</p>
+                    </div>
+                    <div class="fine-print">Unofficial content permitted under WOTC fan policy</div>
+                    <div class="card-footer spell-footer"></div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment & Spell Cards - Foldable</title>
+    <link rel="stylesheet" href="cards.css">
+</head>
+
+<body>
+    <div class="print-controls">
+        <button onclick="window.print()">Print Cards (A4)</button>
+        <p>Ensure your printer settings are set to scale: 100% or "Actual Size".<br>
+            Cut along the dashed lines, fold along the dotted center line, and glue the halves together.</p>
+    </div>
+
+    <div class="page">
+        <!-- Example Card 1: Greataxe -->
+        <div class="card">
+            <!-- Back of card (Top half, rotated 180 degrees) -->
+            <div class="card-face back">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">GREATAXE</h1>
+                        <div class="card-subtitle">Damage</div>
+                    </div>
+
+                    <div class="card-body damage-body">
+                        <div class="damage-roll">1d12</div>
+                        <div class="damage-type">Slashing</div>
+                    </div>
+
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+
+            <!-- Front of card (Bottom half) -->
+            <div class="card-face front">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">GREATAXE</h1>
+                        <div class="card-subtitle">Weapon (Martial Melee)</div>
+                    </div>
+
+                    <div class="card-banner">
+                        <strong>Weapon Properties:</strong> Heavy, Two-Handed
+                    </div>
+
+                    <div class="card-body">
+                        <p>When an attack with this weapon hits, it deals the damage on the other side of this card.</p>
+
+                        <h3 class="property-title">Mastery Property: Cleave</h3>
+                        <p>If you hit a creature with a melee attack roll using this weapon, you can make a melee attack
+                            roll with the weapon against a second creature within 5 feet of the first that is also
+                            within your reach. On a hit, the second creature takes the weapon's damage, but don't add
+                            your ability modifier to that damage unless that modifier is negative. You can make this
+                            extra attack only once per turn.</p>
+                    </div>
+
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example Card 2: Hand Axe -->
+        <div class="card">
+            <!-- Back of card (Top half) -->
+            <div class="card-face back">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">HAND AXE</h1>
+                        <div class="card-subtitle">Damage</div>
+                    </div>
+
+                    <div class="card-body damage-body">
+                        <div class="damage-roll">1d6</div>
+                        <div class="damage-type">Slashing</div>
+                    </div>
+
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+
+            <!-- Front of card (Bottom half) -->
+            <div class="card-face front">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">HAND AXE</h1>
+                        <div class="card-subtitle">Weapon (Simple Melee)</div>
+                    </div>
+
+                    <div class="card-banner">
+                        <strong>Range:</strong> 20/60 Feet<br>
+                        <strong>Weapon Properties:</strong> Light, Thrown
+                    </div>
+
+                    <div class="card-body">
+                        <p>When an attack with this weapon hits, it deals the damage on the other side of this card.</p>
+
+                        <h3 class="property-title">Mastery Property: Vex</h3>
+                        <p>If you hit a creature with this weapon and deal damage to the creature, you have Advantage on
+                            your next attack roll against that creature before the end of your turn.</p>
+                    </div>
+                    <div class="fine-print">Unofficial content permitted under WOTC fan policy and SRC 5.2.1 (CC-BY-4.0)
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example Card 3: Spell Card -->
+        <div class="card">
+            <!-- Back of card (Top half) -->
+            <div class="card-face back">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">FIREBALL</h1>
+                        <div class="card-subtitle">Spell Level 3</div>
+                    </div>
+
+                    <div class="card-banner spell-banner">
+                        <strong>At Higher Levels.</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <p>When you cast this spell using a spell slot of 4th level or higher, the damage increases by
+                            1d6 for each slot level above 3rd.</p>
+                    </div>
+
+                    <div class="card-footer spell-footer"></div>
+                </div>
+            </div>
+
+            <!-- Front of card (Bottom half) -->
+            <div class="card-face front">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">FIREBALL</h1>
+                        <div class="card-subtitle">3rd-Level Evocation</div>
+                    </div>
+
+                    <div class="card-banner spell-banner">
+                        <strong>Casting Time:</strong> 1 Action<br>
+                        <strong>Range:</strong> 150 Feet<br>
+                        <strong>Components:</strong> V, S, M
+                    </div>
+
+                    <div class="card-body">
+                        <p>A bright streak flashes from your pointing finger to a point you choose within range and then
+                            blossoms with a low roar into an explosion of flame.</p>
+                        <p>Each creature in a 20-foot-radius sphere centered on that point must make a Dexterity saving
+                            throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a
+                            successful one.</p>
+                    </div>
+
+                    <div class="card-footer spell-footer"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+[
+  {
+    "type": "background",
+    "title": "MOONWELL PILGRIM",
+    "subtitle": "Background",
+    "skills": "Nature, Performance",
+    "tools": "Painter's Supplies",
+    "traits": "Magic Initiate (Druid)",
+    "front_body": "<p>Like many who hail from the Moonshae Isles, you grew up revering the blessed land, its unique gods, and the mysterious shrines called the moonwells. As a moonwell pilgrim, you undertook a quest to visit and commune with every moonwell on (or off) the map. Along your idyllic journeys, you collected a repertoire of Moonshavian folk songs, painted landscapes of enchanting vistas, and even learned how to wield a bit of primal magic.</p>",
+    "back_title": "MOONWELL PILGRIM",
+    "back_subtitle": "Ability Scores & Equipment",
+    "back_body": "<p><strong>Ability Scores:</strong> Constitution, Wisdom, Charisma</p><p><strong>Equipment:</strong> Choose A or B: (A) Quarterstaff, Painter's Supplies, Bedroll, Bell, Pouch, Robe, String, Traveler’s Clothes, Waterskin, 38 GP; or (B) 50 GP</p>"
+  },
+  {
+    "type": "background",
+    "title": "NOBLE",
+    "subtitle": "Background",
+    "skills": "History, Persuasion",
+    "tools": "Gaming Set",
+    "traits": "Skilled Feat",
+    "front_body": "<p>You were raised in a family that has wealth, power, and privilege. You carry a noble title, and your family owns land, collects taxes, and wields significant political influence. You have received the finest education and have the manners to mingle among the high society comfortably.</p>",
+    "back_title": "NOBLE",
+    "back_subtitle": "Ability Scores & Equipment",
+    "back_body": "<p><strong>Ability Scores:</strong> Strength, Intelligence, Charisma</p><p><strong>Equipment:</strong> Fine clothes, a signet ring, a scroll of pedigree, a purse containing 25 GP.</p>"
+  }
+]

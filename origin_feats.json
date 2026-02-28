@@ -1,0 +1,14 @@
+[
+  {
+    "type": "feat",
+    "title": "ZHENTARIM RUFFIAN",
+    "subtitle": "Origin Feat",
+    "traits": "",
+    "skills": "",
+    "tools": "",
+    "front_body": "<p>You gain the following benefits:</p><p><strong>Exploit Opening:</strong> When you roll damage for an Opportunity Attack, you can roll the damage dice twice and use either roll against the target.</p><p><strong>Family First:</strong> If you have Heroic Inspiration when you roll Initiative, you can expend it to give yourself and your allies Advantage on that Initiative roll.</p>",
+    "back_title": "ZHENTARIM RUFFIAN",
+    "back_subtitle": "Feat Details",
+    "back_body": "<p>You have been trained in the cutthroat tactics of the Black Network. Loyalty to your comrades and seizing every advantage are the core tenets of your survival.</p>"
+  }
+]

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cards_species</title>
+    <link rel="stylesheet" href="../cards.css">
+    <style>
+        .page { page-break-after: always; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 2mm; width: 210mm; padding: 5mm; background: white; margin-bottom: 2rem;}
+        @media print {
+            body { background-color: white; padding: 0; margin: 0;}
+            .print-controls { display: none; }
+            .page { box-shadow: none; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-controls">
+        <button onclick="window.print()">Print Cards (A4)</button>
+        <p>Ensure printer settings are set to scale: 100% or "Actual Size".<br>
+        Cut along the dashed lines, fold along the dotted center line, and glue the halves together.</p>
+    </div>
+
+    <div class="page">
+
+        <div class="card">
+            <div class="card-face back">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">DRAGONBORN</h1>
+                        <div class="card-subtitle">Resistance & Darkvision</div>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Damage Resistance:</strong> You have resistance to the damage type associated with your draconic ancestry.</p><p><strong>Darkvision:</strong> You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light.</p><p>At level 5, you gain the Winged ability to manifest temporary wings (fly speed) for 10 minutes, once per Long Rest.</p>
+                    </div>
+                    <div class="card-footer" style="background-color: #00796b;"></div>
+                </div>
+            </div>
+            <div class="card-face front">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">DRAGONBORN</h1>
+                        <div class="card-subtitle">Species</div>
+                    </div>
+                    <div class="card-banner" style="background-color: #b2dfdb;">
+                        <strong>Type:</strong> SPECIES<br>
+                        
+                        
+                        <strong>Traits:</strong> 30 ft Speed, Size Medium
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Draconic Ancestry:</strong> Choose a type of dragon. Your breath weapon and damage resistance are determined by the dragon type.<br><strong>Breath Weapon:</strong> When you take the Attack action, you can replace one of your attacks with an exhalation of magical energy in a 15-foot cone or a 30-foot line. Each creature in that area must make a Dexterity saving throw (DC 8 + CON + PB). On a failed save, the creature takes 1d10 damage of the type associated with your ancestry. On a successful save, it takes half as much. You can use this a number of times equal to your PB per Long Rest.</p>
+                    </div>
+                    <div class="fine-print">Unofficial content permitted under WOTC fan policy</div>
+                    <div class="card-footer" style="background-color: #00796b;"></div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="card">
+            <div class="card-face back">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">TIEFLING</h1>
+                        <div class="card-subtitle">Resistance & Darkvision</div>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Darkvision:</strong> You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light.</p><p><strong>Damage Resistance:</strong> You have resistance to cold (Abyssal), necrotic (Chthonic), or fire (Infernal) damage based on your legacy choice.</p>
+                    </div>
+                    <div class="card-footer" style="background-color: #00796b;"></div>
+                </div>
+            </div>
+            <div class="card-face front">
+                <div class="card-inner">
+                    <div class="card-header">
+                        <h1 class="card-title">TIEFLING</h1>
+                        <div class="card-subtitle">Species</div>
+                    </div>
+                    <div class="card-banner" style="background-color: #b2dfdb;">
+                        <strong>Type:</strong> SPECIES<br>
+                        
+                        
+                        <strong>Traits:</strong> 30 ft Speed, Size Medium
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Fiendish Legacy:</strong> You have a legacy from the Lower Planes. Choose Abyssal, Chthonic, or Infernal. This choice determines your innate spellcasting and resistance.<br>At level 1, you know a specific cantrip. At level 3, you learn a 1st-level spell and can cast it once per Long Rest. At level 5, you learn a 2nd-level spell.</p>
+                    </div>
+                    <div class="fine-print">Unofficial content permitted under WOTC fan policy</div>
+                    <div class="card-footer" style="background-color: #00796b;"></div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+</body>
+</html>
