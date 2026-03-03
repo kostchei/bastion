@@ -150,6 +150,38 @@
             font-weight: 700;
             white-space: nowrap;
         }
+
+        .open-link.print-link {
+            background: #2f1f15;
+            color: #fff;
+            border-color: #2f1f15;
+        }
+
+        .actions-cell {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            align-items: center;
+        }
+
+        .quick-print-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .quick-print-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 780px) {
+            .quick-print-grid {
+                grid-template-columns: minmax(260px, 460px) auto;
+            }
+        }
     </style>
 </head>
 
@@ -159,7 +191,23 @@
             <h1>TaleKeeper Character List</h1>
             <p>Data source: <code>https://api.talekeeper.org/api/collections/users_stats/records</code></p>
             <p class="muted">This page lists visible characters, then opens <code>index.html</code> using the selected record id.</p>
+            <p class="muted"><strong>Print visibility:</strong> use the row-level <strong>Print Sheet</strong> button, or the quick print controls below.</p>
             <div id="status" class="status">Ready.</div>
+        </section>
+
+        <section class="panel">
+            <h2>Quick Print</h2>
+            <div class="quick-print-grid">
+                <div class="field-row">
+                    <label for="quick-character-id">Character Record ID</label>
+                    <input id="quick-character-id" placeholder="Paste users_stats record id">
+                </div>
+                <div class="quick-print-actions">
+                    <button id="quick-open-sheet" type="button">Open Sheet</button>
+                    <button id="quick-print-sheet" type="button">Print Sheet</button>
+                </div>
+            </div>
+            <p class="muted">Useful when list access is restricted but you already know the character id.</p>
         </section>
 
         <section class="panel auth-grid">
@@ -198,7 +246,7 @@
                         <th>Level</th>
                         <th>Species</th>
                         <th>Updated</th>
-                        <th>Actions</th>
+                        <th>Actions (Open / Print)</th>
                     </tr>
                 </thead>
                 <tbody id="character-rows">

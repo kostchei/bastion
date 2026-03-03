@@ -157,6 +157,18 @@ function formatDate(dateValue) {
   return date.toLocaleString();
 }
 
+function buildCharacterSheetUrls(characterId) {
+  const normalizedId = String(characterId || "").trim();
+  const encodedId = encodeURIComponent(normalizedId);
+  return {
+    openUrl: `index.html?characterId=${encodedId}`,
+    printUrl: `index.html?characterId=${encodedId}&print=1`,
+    profUrl: `proficiencies.html?characterId=${encodedId}`,
+    pietyUrl: `piety.html?characterId=${encodedId}`,
+    factionsUrl: `factions.html?characterId=${encodedId}`,
+  };
+}
+
 async function fetchCharacterPage(token, page) {
   const url = `${API_BASE}/api/collections/users_stats/records?page=${page}&perPage=200&sort=character_name`;
   const response = await fetch(url, { headers: authHeaders(token) });
@@ -220,8 +232,7 @@ function renderCharacterRows(items) {
 
     const level = calcLevel(item.levels, item.class_name);
 
-    const openUrl = `index.html?characterId=${encodeURIComponent(item.id)}`;
-    const profUrl = `proficiencies.html?characterId=${encodeURIComponent(item.id)}`;
+    const urls = buildCharacterSheetUrls(item.id);
     const name = String(item.character_name || "Unnamed Hero");
     const className = String(item.class_name || "Commoner");
     const species = String(item.species || "-");
@@ -247,33 +258,36 @@ function renderCharacterRows(items) {
     row.appendChild(updatedCell);
 
     const openCell = document.createElement("td");
+    openCell.className = "actions-cell";
     const link = document.createElement("a");
     link.className = "open-link";
-    link.href = openUrl;
+    link.href = urls.openUrl;
     link.textContent = "Open Sheet";
     openCell.appendChild(link);
 
-    openCell.appendChild(document.createTextNode(" "));
+    const printLink = document.createElement("a");
+    printLink.className = "open-link print-link";
+    printLink.href = urls.printUrl;
+    printLink.textContent = "Print Sheet";
+    printLink.target = "_blank";
+    printLink.rel = "noopener";
+    openCell.appendChild(printLink);
 
     const profLink = document.createElement("a");
     profLink.className = "open-link";
-    profLink.href = profUrl;
+    profLink.href = urls.profUrl;
     profLink.textContent = "Proficiencies";
     openCell.appendChild(profLink);
 
-    openCell.appendChild(document.createTextNode(" "));
-
     const pietyLink = document.createElement("a");
     pietyLink.className = "open-link";
-    pietyLink.href = `piety.html?characterId=${encodeURIComponent(item.id)}`;
+    pietyLink.href = urls.pietyUrl;
     pietyLink.textContent = "Piety";
     openCell.appendChild(pietyLink);
 
-    openCell.appendChild(document.createTextNode(" "));
-
     const factionsLink = document.createElement("a");
     factionsLink.className = "open-link";
-    factionsLink.href = `factions.html?characterId=${encodeURIComponent(item.id)}`;
+    factionsLink.href = urls.factionsUrl;
     factionsLink.textContent = "Factions";
     openCell.appendChild(factionsLink);
     row.appendChild(openCell);
@@ -381,6 +395,26 @@ function handleClearToken() {
   refreshCharacters();
 }
 
+function readQuickCharacterId() {
+  return String(document.getElementById("quick-character-id")?.value || "").trim();
+}
+
+function openQuickSheet({ print = false } = {}) {
+  const characterId = readQuickCharacterId();
+  if (!characterId) {
+    setStatus("Enter a character record id in Quick Print first.", "error");
+    return;
+  }
+
+  const urls = buildCharacterSheetUrls(characterId);
+  if (print) {
+    window.open(urls.printUrl, "_blank", "noopener");
+    setStatus(`Opening print view for ${characterId}...`, "ok");
+  } else {
+    window.location.href = urls.openUrl;
+  }
+}
+
 function init() {
   const storedToken = readStoredToken();
   if (storedToken) {
@@ -399,6 +433,8 @@ function init() {
   document.getElementById("clear-token").addEventListener("click", handleClearToken);
   document.getElementById("refresh-list").addEventListener("click", refreshCharacters);
   document.getElementById("user-login").addEventListener("submit", handleUserLogin);
+  document.getElementById("quick-open-sheet")?.addEventListener("click", () => openQuickSheet({ print: false }));
+  document.getElementById("quick-print-sheet")?.addEventListener("click", () => openQuickSheet({ print: true }));
 
   refreshCharacters();
 }
