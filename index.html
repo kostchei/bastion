@@ -321,13 +321,19 @@
 
     <button id="print-toggle"
         style="position: fixed; top: 1rem; right: 1rem; padding: 0.5rem 1rem; font-weight: bold; cursor: pointer; z-index: 1001; background: white; border: 2px solid black;">
-        Toggle Print Mode
+        Print Sheet
     </button>
 
     <script>
-        const toggleBtn = document.getElementById('print-toggle');
-        toggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('print-mode');
+        const printBtn = document.getElementById('print-toggle');
+        printBtn.addEventListener('click', () => {
+            document.body.classList.add('print-mode');
+            window.requestAnimationFrame(() => {
+                window.print();
+            });
+        });
+        window.addEventListener('afterprint', () => {
+            document.body.classList.remove('print-mode');
         });
     </script>
 </body>

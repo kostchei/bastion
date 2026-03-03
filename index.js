@@ -644,9 +644,19 @@ function renderSheet(view) {
   setText(".side-tab.background", view.background);
 }
 
+function triggerAutoPrint() {
+  document.body.classList.add("print-mode");
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      window.print();
+    });
+  });
+}
+
 async function initSheetLoader() {
   const params = new URLSearchParams(window.location.search);
   const characterId = params.get("characterId");
+  const shouldAutoPrint = params.get("print") === "1" || params.get("print") === "true";
 
   if (!characterId) {
     setStatus("No character selected. Open list.html first.", "error");
@@ -687,6 +697,7 @@ async function initSheetLoader() {
     const viewModel = buildViewModel(record);
     renderSheet(viewModel);
 
+    let statusMessage = `Loaded ${viewModel.characterName}`;
     let authModel = null;
     try {
       authModel = localStorage.getItem(MODEL_STORAGE_KEY);
@@ -697,15 +708,15 @@ async function initSheetLoader() {
       try {
         const parsed = JSON.parse(authModel);
         if (parsed?.global_role) {
-          setStatus(`Loaded ${viewModel.characterName} (${parsed.global_role})`, "ok");
-          return;
+          statusMessage = `Loaded ${viewModel.characterName} (${parsed.global_role})`;
         }
       } catch {
         // ignore parse failures
       }
     }
 
-    setStatus(`Loaded ${viewModel.characterName}`, "ok");
+    setStatus(statusMessage, "ok");
+    if (shouldAutoPrint) triggerAutoPrint();
   } catch (error) {
     setStatus(`Load failed: ${error.message}`, "error");
   }
